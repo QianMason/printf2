@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/15 18:23:36 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/17 17:01:17 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,25 @@ int     parse_and_print(t_print_struct *print, va_list args, int count)
 {
 	while (*(print->format))
 	{
+		
 		if (*(print->format) == '%')
 		{
 			(print->format)++;
+			if (print->flags[8] == 37)
+			{
+				count++;
+				continue;
+			}
 			print->format = parse_params(print, print->format);
-            if (print->flags[8] > 0)
-			    count += print_conversion(print, print->format, args);
-		}
+            if (print->flags[8] > 0 && print->flags[8] != 37)
+			    count += print_conversion(print, args); //function that will call
+		} // mapping function to get specific function for proper specifier
 		else
 		{
 			write(1, print->format, 1);
 			count++;
+			(print->format)++;
 		}
-		(print->format)++;
 	}
 	return (count);
 }
@@ -42,8 +48,10 @@ char *	parse_params(t_print_struct *print, char *format)
 	{
 		parse_set_flags(print, format);
         format++;
-        if (print->flags[8] > 0)
+        if (print->flags[8] > 0 && print->flags[8] != 37)
             return (format);
+		else if (print->flags[8] == 37)
+			return (ref);
     }
     return (ref); //reached end and didnt hit a % or a conversion specifier
 }
@@ -149,11 +157,37 @@ int		is_conversion(char *format)
 	return (0);
 }
 
-int     print_conversion(t_print_struct *print, char *format, va_list args)
+int     print_conversion(t_print_struct *print, va_list args)
 {
-    int i;
+	int i;
 
-    i = 0;
-    print_conversion_helper(print, format, args)
-    
+	i = 0;
+	i = print->formatters[letter_to_function((char)print->flags[8]](print, args);
 }
+
+// int     print_conversion(t_print_struct *print, va_list args)
+// {
+//     int *i;
+
+// 	*i = 0;
+// 	if (print->flags[8] == 99)
+// 		format_c(print, args. i);
+// 	else if (print->flags[8] == 100)
+// 		format_d(print, args, i);
+// 	else if (print->flags[8] == 102)
+// 		format_f(print, args, i);
+// 	else if (print->flags[8] == 105)
+// 		format_i(print, args, i);
+// 	else if (print->flags[8] == 111)
+// 		format_o(print, args, i);
+// 	else if (print->flags[8] == 112)
+// 		format_p(print, args, i);
+// 	else if (print->flags[8] == 114)
+// 		format_s(print, args, i);
+// 	else if (print->flags[8] == 117)
+// 		format_u(print, args, i);
+// 	else if (print->flags[8] == 120)
+// 		format_x(print, args, i);
+// 	else if (print->flags[8] == 88)
+// 		format_x_upper(print, args, i);
+// }
