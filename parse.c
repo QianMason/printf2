@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/17 17:01:17 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/17 17:28:44 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,18 @@ int     parse_and_print(t_print_struct *print, va_list args, int count)
 			(print->format)++;
 			if (print->flags[8] == 37)
 			{
+				write(1, print->format, 1);
+				reset_flags(print);
 				count++;
 				continue;
 			}
 			print->format = parse_params(print, print->format);
             if (print->flags[8] > 0 && print->flags[8] != 37)
-			    count += print_conversion(print, args); //function that will call
-		} // mapping function to get specific function for proper specifier
+			{
+			    count += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
+				reset_flags(print); 
+			}
+		}
 		else
 		{
 			write(1, print->format, 1);
@@ -162,7 +167,7 @@ int     print_conversion(t_print_struct *print, va_list args)
 	int i;
 
 	i = 0;
-	i = print->formatters[letter_to_function((char)print->flags[8]](print, args);
+	i = print->formatters[letter_to_function((char)print->flags[8])](print->flags, args);
 }
 
 // int     print_conversion(t_print_struct *print, va_list args)

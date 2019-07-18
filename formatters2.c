@@ -6,37 +6,46 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/17 16:39:35 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/17 18:26:40 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int		format_p(t_print_struct *print, va_list args)
+int		format_p(int flags[], va_list args)
 {
 	printf("format string p: %s\n", print->format);
 	return (0);
 }
 
-int		format_s(t_print_struct *print, va_list args)
+int		format_s(int flags[], va_list args) //first one you are working on 
 {
+	int i;
+	int len;
+	char *temp;
+
+	temp = va_arg(args, char *)
+	len = ft_strlen(temp);
+	while (print->)
+	i = 0;
+
 	printf("format string s: %s\n", print->format);
 	return (0);
 }
 
-int		format_u(t_print_struct *print, va_list args)
+int		format_u(int flags[], va_list args)
 {
 	printf("format string u: %s\n", print->format);
 	return (0);
 }
 
-int		format_x(t_print_struct *print, va_list args)
+int		format_x(int flags[], va_list args)
 {
 	printf("format string x: %s\n", print->format);
 	return (0);
 }
 
-int		format_x_upper(t_print_struct *print, va_list args)
+int		format_x_upper(int flags[], va_list args)
 {
 	printf("format string X(upper): %s\n", print->format);
 	return (0);

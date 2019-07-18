@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:43:01 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/17 16:30:23 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/17 18:28:07 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "libft/includes/libft.h"
 # include <unistd.h>
 
-typedef int conversion(t_print_struct *print, va_list args);
+typedef int conversion(int flags[], va_list args);
 
 typedef struct s_print_struct
 {
@@ -51,4 +51,4 @@ int		format_p(t_print_struct *print, va_list args); //format_p(char *format, int
 int		format_s(t_print_struct *print, va_list args); //format_s(char *format, int argnum);
 int		format_u(t_print_struct *print, va_list args); //format_u(char *format, int argnum);
 int		format_x(t_print_struct *print, va_list args); //format_x(char *format, int argnum);
-int		format_x_upper(char *format); //format_x_upper(char *format, int argnum);
+int		format_x_upper(t_print_struct *print, va_list args); //format_x_upper(char *format, int argnum);
