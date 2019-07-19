@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/17 17:28:44 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/18 16:58:04 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,3 +196,17 @@ int     print_conversion(t_print_struct *print, va_list args)
 // 	else if (print->flags[8] == 88)
 // 		format_x_upper(print, args, i);
 // }
+
+/*
+** THIS IS THE CURRENT MAPPING FOR THE FLAG CHECK FLAGS: (created per %)
+**
+**           +           0           0/1
+**           -           1           0/1
+**           #           2           0/1
+**           0           3           0/1
+**         ' '           4           0/1
+**        minw           5           0/minw
+**   precision           6           0/precision
+** 	length mod           7           0 (no flags) or 1, 2, 3, 4 (hh, h, l, ll)
+** conversions           8           letter to int, 37 (%) means we encountered another % before a conversion so get rid of everything and print the second %
+*/

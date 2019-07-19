@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/17 17:21:22 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/18 15:17:32 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int		format_c(int flags[], va_list args)
 	return (0);
 }
 
-int		format_d(int flags[], va_list args);
+int		format_d(int flags[], va_list args)
 {
 	printf("format string d: %s\n", print->format);
 	return (0);
