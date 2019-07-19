@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:47:11 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/18 19:28:18 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 15:57:16 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		format_s_left(int flags[], char *temp, int len)
 {
-	int 	count
+	int 	count;
 
 	count = 0;
 	if (flags[6] > 0 && flags[6] < len)
@@ -62,8 +62,10 @@ int		format_s_right(int flags[], char *temp, int len)
 
 	pad = 0;
 	count = 0;
-	if (flags[6] > 0 && flags[6] =< len)
+	if (flags[6] > 0 && flags[6] <= len)
+	{
 		count = format_s_right_helper(flags, temp, len);
+	}
 	else //no considerations for precision again since its greater than strlen or 0 so all we do is print normally
 	{
 		if (len >= flags[5])
@@ -91,6 +93,7 @@ int		format_s_right_helper(int flags[], char *temp, int len)
 	count = 0;
 	if (flags[6] > flags[5]) //precision greater than minw, no need to justify
 	{
+	    printf("precision %d, minw %d\n", flags[6], flags[5]);
 		while (flags[6]-- > 0)
 		{
 			count++;
@@ -100,7 +103,7 @@ int		format_s_right_helper(int flags[], char *temp, int len)
 	}
 	else //precision not as great as minw, need to pad the left side with stuff
 	{
-		while (pad++ < flags[5] - flags[6])
+		while (count < flags[5] - flags[6])
 		{
 			count++;
 			write(1, " ", 1);

@@ -12,6 +12,118 @@ typedef struct s_print_struct
 	conversion *formatters[10];
 }				t_print_struct;
 
+void    ft_putchar(char c)
+{
+    write(1, &c, 1);
+}
+
+int		format_s_left_helper(int flags[], char *temp, int len)
+{
+	int		count;
+
+	count = 0;
+	while (count < len) //putchar til end of string
+	{
+		count++;
+		write(1, temp, 1);
+		temp++;
+	}
+	while (count < flags[5]) //pad down spaces until end of minw 
+	{
+		write(1, " ", 1);
+		count++;
+	}
+	return (count);
+}
+
+int		format_s_left(int flags[], char *temp, int len)
+{
+	int 	count;
+
+	count = 0;
+	if (flags[6] > 0 && flags[6] < len)
+	{
+		while (flags[6]-- > 0)
+		{
+			write(1, temp, 1);
+			count++;
+			temp++;
+		}
+		while (count < flags[5])
+		{
+		    count++;
+			write(1, " ", 1);
+		}
+	}
+	else //no consideration for precision, as long as minw is greater than len, pad til minw, else, just write out the string
+		count = format_s_left_helper(flags, temp, len);
+	return (count);
+}
+
+int		format_s_right_helper(int flags[], char *temp, int len)
+{
+	int count;
+	
+	count = 0;
+	if (flags[6] > flags[5]) //precision greater than minw, no need to justify
+	{
+	    printf("precision %d, minw %d\n", flags[6], flags[5]);
+		while (flags[6]-- > 0)
+		{
+			count++;
+			write(1, temp++, 1);
+			//temp++;
+		}
+	}
+	else //precision not as great as minw, need to pad the left side with stuff
+	{
+		while (count < flags[5] - flags[6])
+		{
+			count++;
+			write(1, " ", 1);
+		}
+		while (flags[6]-- > 0)
+		{
+			count++;
+			write(1, temp++, 1);
+			//temp++;
+		}
+	}
+	return (count);
+}
+
+int		format_s_right(int flags[], char *temp, int len)
+{
+	int pad;
+	int	count;
+
+	pad = 0;
+	count = 0;
+	if (flags[6] > 0 && flags[6] <= len)
+	{
+	    printf("format_s_right_helper call\n");
+		count = format_s_right_helper(flags, temp, len);
+	}
+	else //no considerations for precision again since its greater than strlen or 0 so all we do is print normally
+	{
+		if (len >= flags[5])
+			count = format_s_left(flags, temp, len); //then it just becomes the left justify case
+		else //len < minw, so we need padding
+		{
+			while (pad++ < flags[5] - len)
+			{
+				count++;
+				write(1, " ", 1);
+				temp++;
+			}
+			while (count++ < len)
+				write(1, temp++, 1);
+				//temp++
+		}
+	}
+	return (count);
+}
+
 int		format_c(int flags[], va_list args)
 {
 	printf("format string c: %c\n", (char)flags[8]);
@@ -51,27 +163,29 @@ int		format_p(int flags[], va_list args)
 int		format_s(int flags[], va_list args) //first one you are working on 
 {
 	int count;
-	int precision;
-	int minw;
 	char *temp;
+	char *len;
 	
-	count = 0;
-	precision = flags[6];
 	temp = va_arg(args, char *);
-	while (precision-- > 0 && *temp)
+	len = strlen(temp);
+	if (!flags[5] && !flags[6])
 	{
-		//ft_putchar(*temp);
-		write(1, temp, 1);
-		count++;
-		temp++;
+		write(1, temp, len);
+		return (len);
 	}
-	while (count < flags[5])
+	else
 	{
-		//ft_putchar(' ');
-		write(1, " ", 1);
-		count++;
+		if (flags[1] == 1)
+		{
+		    printf("format s left call\n");
+		    count = format_s_left(flags, temp, len); //non default behavior
+		}
+		else
+		{
+		    printf("format s right call\n");
+			count = format_s_right(flags, temp, len); //default behavior
+		}
 	}
-	printf("value of count being returned: %d\n", count);
 	return (count);
 }
 
@@ -138,8 +252,8 @@ int     print_conversion(t_print_struct *print, va_list args)
 	int i;
 
 	i = 0;
-	printf("in print conversion func\n");
 	i = print->formatters[letter_to_function((char)print->flags[8])](print->flags, args);
+	return (i);
 }
 
 void    print_table(t_print_struct *print)
@@ -226,7 +340,7 @@ void	parse_set_flags(t_print_struct *print, char *format)
 		print->flags[3] = 1;
 	else if (*format == ' ')
 		print->flags[4] = 1;
-    else if (atoi(format) > 0 && print->flags[6] == 0)
+    else if (atoi(format) > 0 && print->flags[6] == 0 && print->flags[5] == 0)
         print->flags[5] = atoi(format);
     else if (*format == '.')
         print->flags[6] = 1;
@@ -279,12 +393,12 @@ int     parse_and_print(t_print_struct *print, va_list args, int count)
 		else
 		{
 			write(1, print->format, 1);
+			count++;
 			(print->format)++;
 		}
 	}
 	return (count);
 }
-
 
 int		ft_printf(const char *format, ...)
 {
@@ -301,7 +415,12 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    int j = ft_printf("%-+5.6s", "this is a string");
+    int j = ft_printf("%s\n%s", "this is a string,", "and this is the next line\n");
+    printf("\n");
     printf("length of print: %d\n", j);
+    int k = printf("%s\n%s", "this is a string,", "and this is the next line\n");
+    printf("\n");
+    printf("length of print: %d\n", k);
     return (0);
 }
+

@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/18 19:13:20 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 15:58:00 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,15 @@ int		format_s(int flags[], va_list args) //first one you are working on
 	else
 	{
 		if (flags[1] == 1)
-			count = format_s_left(flags, temp, len); //non default behavior
+		{
+		    printf("format s left call\n");
+		    count = format_s_left(flags, temp, len); //non default behavior
+		}
 		else
-			count = format_s_right(flags, temp, len); //default behavior	
+		{
+		    printf("format s right call\n");
+			count = format_s_right(flags, temp, len); //default behavior
+		}
 	}
 	return (count);
 }

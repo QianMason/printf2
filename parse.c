@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/18 16:58:04 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 15:59:26 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int     parse_and_print(t_print_struct *print, va_list args, int count)
 {
 	while (*(print->format))
 	{
-		
 		if (*(print->format) == '%')
 		{
 			(print->format)++;
@@ -24,14 +23,13 @@ int     parse_and_print(t_print_struct *print, va_list args, int count)
 			{
 				write(1, print->format, 1);
 				reset_flags(print);
-				count++;
 				continue;
 			}
 			print->format = parse_params(print, print->format);
             if (print->flags[8] > 0 && print->flags[8] != 37)
 			{
 			    count += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
-				reset_flags(print); 
+				reset_flags(print);
 			}
 		}
 		else
@@ -73,7 +71,7 @@ void	parse_set_flags(t_print_struct *print, char *format)
 		print->flags[3] = 1;
 	else if (*format == ' ')
 		print->flags[4] = 1;
-    else if (atoi(format) > 0) && print->flags[6] == 0)
+    else if (atoi(format) > 0 && print->flags[6] == 0 && print->flags[5] == 0)
         print->flags[5] = atoi(format);
     else if (*format == '.')
         print->flags[6] = 1;
@@ -168,7 +166,9 @@ int     print_conversion(t_print_struct *print, va_list args)
 
 	i = 0;
 	i = print->formatters[letter_to_function((char)print->flags[8])](print->flags, args);
+	return (i);
 }
+
 
 // int     print_conversion(t_print_struct *print, va_list args)
 // {
