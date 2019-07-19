@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:47:11 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/19 15:57:16 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 16:03:04 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ int		format_s_left(int flags[], char *temp, int len)
 	{
 		while (flags[6]-- > 0)
 		{
-			putchar(*temp);
+			write(1, temp, 1);
 			count++;
 			temp++;
 		}
 		while (count < flags[5])
 		{
 		    count++;
-			putchar(' ');
+			write(1, " ", 1);
 		}
 	}
 	else //no consideration for precision, as long as minw is greater than len, pad til minw, else, just write out the string
@@ -44,12 +44,12 @@ int		format_s_left_helper(int flags[], char *temp, int len)
 	while (count < len) //putchar til end of string
 	{
 		count++;
-		ft_putchar(*temp);
+		write(1, temp, 1);
 		temp++;
 	}
 	while (count < flags[5]) //pad down spaces until end of minw 
 	{
-		ft_putchar(' ');
+		write(1, " ", 1);
 		count++;
 	}
 	return (count);
