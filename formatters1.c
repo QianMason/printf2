@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/18 15:17:32 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 19:03:27 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,32 @@
 
 int		format_c(int flags[], va_list args)
 {
-	printf("format string c: %c\n", (char)print->flags[8]);
-	return (0);
+	int count;
+	char c;
+
+	count = 0;
+	c = va_arg(args, int);
+	if (flags[1] == 1) //left justify
+	{
+		count++;
+		write(1, &c, 1);
+		while (count < flags[5])
+		{
+			write(1, " ", 1);
+			count++;
+		}
+	}
+	else
+	{
+		while (count < flags[5] - 1)
+		{
+			write(1, " ", 1);
+			count++;
+		}
+		write(1, &c, 1);
+		count++;
+	}
+	return (count);
 }
 
 int		format_d(int flags[], va_list args)
