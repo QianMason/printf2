@@ -9,6 +9,7 @@ typedef struct s_print_struct
 {
 	char *format; //holds the raw string itself
 	int			flags[9];
+	int count;
 	conversion *formatters[10];
 }				t_print_struct;
 
@@ -101,7 +102,7 @@ int		format_s_right(int flags[], char *temp, int len)
 	count = 0;
 	if (flags[6] > 0 && flags[6] <= len)
 	{
-	    printf("format_s_right_helper call\n");
+	    //printf("format_s_right_helper call\n");
 		count = format_s_right_helper(flags, temp, len);
 	}
 	else //no considerations for precision again since its greater than strlen or 0 so all we do is print normally
@@ -132,7 +133,7 @@ int		format_c(int flags[], va_list args)
 
 int		format_d(int flags[], va_list args)
 {
-	printf("format string d");
+	//printf("format string d");
 	return (0);
 }
 
@@ -177,12 +178,12 @@ int		format_s(int flags[], va_list args) //first one you are working on
 	{
 		if (flags[1] == 1)
 		{
-		    printf("format s left call\n");
+		    //printf("format s left call\n");
 		    count = format_s_left(flags, temp, len); //non default behavior
 		}
 		else
 		{
-		    printf("format s right call\n");
+		    //printf("format s right call\n");
 			count = format_s_right(flags, temp, len); //default behavior
 		}
 	}
@@ -268,7 +269,7 @@ int		is_conversion(char *format)
 {
 	if (*format == 'c' || *format == 'd' || *format == 'f' || *format == 'i'
 		|| *format == 's' || *format == 'o' || *format == 'p' || *format == 'u'
-			|| *format == 'x' || *format == 'X')
+			|| *format == 'x' || *format == 'X' || *format == '%')
 			{
 				return (1);
 			}
@@ -324,6 +325,7 @@ t_print_struct *init_struct(t_print_struct *p, char *format, va_list args)
 		return (NULL);
 	p->format = format;
 	init_dispatch_table(p->formatters);
+	p->count = 0;
 	reset_flags(p);
 	return (p);
 }
@@ -350,6 +352,8 @@ void	parse_set_flags(t_print_struct *print, char *format)
         format = parse_set_len_mod(print, format);
     else if (is_conversion(format))
         print->flags[8] = (int)(*format);
+	else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
+		print->flags[8] = -1;
 }
 
 char *	parse_params(t_print_struct *print, char *format)
@@ -364,54 +368,66 @@ char *	parse_params(t_print_struct *print, char *format)
         if (print->flags[8] > 0 && print->flags[8] != 37)
             return (format);
 		else if (print->flags[8] == 37)
+		{
+			write(1, "%", 1);
+			(print->count)++;
+			reset_flags(print);
+			return (format);
+		}
+		else if (print->flags[8] == -1) //case where parse_set_flags found something that wasnt anything, so we write '%' since 
+		{ //outer function moves format pointer over, and then start printing from there again
+			write(1, "%", 1);
+			(print->count)++;
+			reset_flags(print);
 			return (ref);
+		}
     }
     return (ref); //reached end and didnt hit a % or a conversion specifier
 }
 
 
-int     parse_and_print(t_print_struct *print, va_list args, int count)
+int     parse_and_print(t_print_struct *print, va_list args)
 {
 	while (*(print->format))
 	{
 		if (*(print->format) == '%')
 		{
 			(print->format)++;
-			if (print->flags[8] == 37)
-			{
-				write(1, print->format, 1);
-				reset_flags(print);
-				continue;
-			}
+			// if (print->flags[8] == 37)
+			// {
+			// 	write(1, print->format, 1);
+			// 	reset_flags(print);
+			// 	continue;
+			// }
 			print->format = parse_params(print, print->format);
+			//print_table(print);
             if (print->flags[8] > 0 && print->flags[8] != 37)
 			{
-			    count += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
+			    (print->count) += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
 				reset_flags(print);
 			}
 		}
 		else
 		{
 			write(1, print->format, 1);
-			count++;
+			(print->count)++;
 			(print->format)++;
 		}
 	}
-	return (count);
+	return (print->count);
 }
 
 int		ft_printf(const char *format, ...)
 {
-	int				*count;
 	t_print_struct	*print;
 	va_list			args;
 
-	count = 0;
 	va_start(args, format);
 	print = init_struct(print, (char*)format, args);
-	count = parse_and_print(print, args, count);
-	return (count);
+	print->count = parse_and_print(print, args);
+	return (print->count);
 }
+
 
 int     main(void)
 {
@@ -421,6 +437,10 @@ int     main(void)
     int k = printf("%s\n%s", "this is a string,", "and this is the next line\n");
     printf("\n");
     printf("length of print: %d\n", k);
+    // int i = printf("%5.6% %s\n", "string");
+    // printf("value of printf = i: %d\n", i);
+    // int j = ft_printf("%5.6% %s\n", "string");
+    // printf("value of ft_printf = j: %d\n", j);    
     return (0);
 }
 

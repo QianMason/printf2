@@ -6,40 +6,41 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/19 15:59:26 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 18:27:02 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int     parse_and_print(t_print_struct *print, va_list args, int count)
+int     parse_and_print(t_print_struct *print, va_list args)
 {
 	while (*(print->format))
 	{
 		if (*(print->format) == '%')
 		{
 			(print->format)++;
-			if (print->flags[8] == 37)
-			{
-				write(1, print->format, 1);
-				reset_flags(print);
-				continue;
-			}
+			// if (print->flags[8] == 37)
+			// {
+			// 	write(1, print->format, 1);
+			// 	reset_flags(print);
+			// 	continue;
+			// }
 			print->format = parse_params(print, print->format);
+			print_table(print);
             if (print->flags[8] > 0 && print->flags[8] != 37)
 			{
-			    count += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
+			    (print->count) += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
 				reset_flags(print);
 			}
 		}
 		else
 		{
 			write(1, print->format, 1);
-			count++;
+			(print->count)++;
 			(print->format)++;
 		}
 	}
-	return (count);
+	return (print->count);
 }
 
 char *	parse_params(t_print_struct *print, char *format)
@@ -54,7 +55,19 @@ char *	parse_params(t_print_struct *print, char *format)
         if (print->flags[8] > 0 && print->flags[8] != 37)
             return (format);
 		else if (print->flags[8] == 37)
+		{
+			write(1, "%", 1);
+			(print->count)++;
+			reset_flags(print);
+			return (format);
+		}
+		else if (print->flags[8] == -1) //case where parse_set_flags found something that wasnt anything, so we write '%' since 
+		{ //outer function moves format pointer over, and then start printing from there again
+			write(1, "%", 1);
+			(print->count)++;
+			reset_flags(print);
 			return (ref);
+		}
     }
     return (ref); //reached end and didnt hit a % or a conversion specifier
 }
@@ -81,6 +94,8 @@ void	parse_set_flags(t_print_struct *print, char *format)
         format = parse_set_len_mod(print, format);
     else if (is_conversion(format))
         print->flags[8] = (int)(*format);
+	else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
+		print->flags[8] = -1;
 }
 
 // char *	parse_params(t_print_struct *print, char *format)
@@ -153,7 +168,7 @@ int		is_conversion(char *format)
 {
 	if (*format == 'c' || *format == 'd' || *format == 'f' || *format == 'i'
 		|| *format == 's' || *format == 'o' || *format == 'p' || *format == 'u'
-			|| *format == 'x' || *format == 'X')
+			|| *format == 'x' || *format == 'X' }} *format == '%')
 			{
 				return (1);
 			}

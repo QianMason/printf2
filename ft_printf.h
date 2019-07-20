@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:43:01 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/17 18:28:07 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 18:21:43 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_print_struct
 {
 	char *format; //holds the raw string itself
 	conversion *formatters[10];
+	int			count;
 	// void (*format_c)(char, t_print_struct *);
 	// void (*format_d)(signed int, t_print_struct *);
 	// void (*format_f)(double, t_print_struct *);

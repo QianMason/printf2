@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:46:48 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/15 16:46:58 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/19 18:26:20 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_print_struct *init_struct(t_print_struct *p, char *format, va_list args)
 		return (NULL);
 	p->format = format;
 	init_dispatch_table(p->formatters);
+	p->count = 0;
 	reset_flags(p);
 	return (p);
 }
