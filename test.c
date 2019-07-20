@@ -127,10 +127,36 @@ int		format_s_right(int flags[], char *temp, int len)
 
 int		format_c(int flags[], va_list args)
 {
-	printf("format string c: %c\n", (char)flags[8]);
-	return (0);
-}
+	int count;
+	char c;
 
+    count = 0;
+	c = va_arg(args, int);
+	if (flags[1] == 1) //left justify
+	{
+	    //printf("left justify call\n");
+		count++;
+		write(1, &c, 1);
+		//printf("value of count before while loop: %d\n", count);
+		while (count < flags[5])
+		{
+			write(1, " ", 1);
+			count++;
+		}
+	}
+	else
+	{ 
+	    //printf("right justify call\n");
+		while (count < flags[5] - 1)
+		{
+			write(1, " ", 1);
+			count++;
+		}
+		write(1, &c, 1);
+		count++;
+	}
+	return (count);
+}
 int		format_d(int flags[], va_list args)
 {
 	//printf("format string d");
@@ -431,16 +457,20 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    int j = ft_printf("%s\n%s", "this is a string,", "and this is the next line\n");
-    printf("\n");
-    printf("length of print: %d\n", j);
-    int k = printf("%s\n%s", "this is a string,", "and this is the next line\n");
-    printf("\n");
-    printf("length of print: %d\n", k);
+    // int j = ft_printf("%s\n%s", "this is a string,", "and this is the next line\n");
+    // printf("\n");
+    // printf("length of print: %d\n", j);
+    // int k = printf("%s\n%s", "this is a string,", "and this is the next line\n");
+    // printf("\n");
+    // printf("length of print: %d\n", k);
     // int i = printf("%5.6% %s\n", "string");
     // printf("value of printf = i: %d\n", i);
     // int j = ft_printf("%5.6% %s\n", "string");
-    // printf("value of ft_printf = j: %d\n", j);    
+    // printf("value of ft_printf = j: %d\n", j);
+    int i = printf("%9c\n", 33);
+    printf("value of printf = i: %d\n", i);
+    int j = ft_printf("%9c\n", 33);
+    printf("value of ft_printf = j: %d\n", j);
     return (0);
 }
 
