@@ -38,6 +38,52 @@ int    convert_to_hex(unsigned n, int flag)
     return (count);
 }
 
+int     format_p_left_helper(int flags[], unsigned dec)
+{
+    int count;
+
+    count = 0;
+    write(1, "0x", 2);
+    count += 2;
+    if (flags[5] > 0) //minw
+    {
+        count += convert_to_hex(dec, 1);
+        while (count < flags[5])
+        {
+            write(1, " ", 1);
+            count++;
+        }
+    }
+    else
+        count += convert_to_hex(dec, 1); 
+    return (count);
+}
+
+int     format_p_right_helper(int flags[], unsigned dec, int len)
+{
+    int count;
+
+    count = 0;
+    if (len + 2 > flags[5]) //since 0x
+    {
+        write(1, "0x", 2);
+        count +=2;
+        count += convert_to_hex(dec, 1);
+    }
+    else
+    {
+        while (count < (flags[5] - (len + 2)))
+        {
+            write(1, " ", 1);
+            count++;
+        }
+        write(1, "0x", 2);
+        count += 2;
+        count += convert_to_hex(dec, 1);
+    }
+    return (count);
+}
+
 int		format_s_left_helper(int flags[], char *temp, int len)
 {
 	int		count;
@@ -213,41 +259,9 @@ int		format_p(int flags[], va_list args)
 	dec = (unsigned)temp;
 	len = convert_to_hex(dec, 0);
 	if (flags[1] == 1) //left justify
-	{
-		write(1, "0x", 2);
-		count += 2;
-		if (flags[5] > 0) //minw
-		{
-			count += convert_to_hex(dec, 1);
-			while (count < flags[5])
-			{
-				write(1, " ", 1);
-				count++;
-			}
-		}
-		else
-			count += convert_to_hex(dec, 1); 
-	}
+		count += format_p_left_helper(flags, dec);
 	else //right justify
-	{
-		if (len + 2 > flags[5]) //since 0x
-		{
-			write(1, "0x", 2);
-			count +=2;
-			count += convert_to_hex(dec, 1);
-		}
-		else
-		{
-			while (count < (flags[5] - (len + 2)))
-			{
-				write(1, " ", 1);
-				count++;
-			}
-			write(1, "0x", 2);
-			count += 2;
-			count += convert_to_hex(dec, 1);
-		}
-	}
+		count += format_p_right_helper(flags, dec, len);
 	return (count);
 }
 
@@ -533,10 +547,11 @@ int     main(void)
     // printf("value of ft_printf = j: %d\n", j);
     char *temp;
     temp = "this is a test string.";
-    int i = printf("%-15p\n", temp);
+    int i = printf("%15p\n", temp);
     printf("value of printf = i: %d\n", i);
     int j = ft_printf("%15p\n", temp);
     printf("value of ft_printf = j: %d\n", j);
     return (0);
 }
+
 
