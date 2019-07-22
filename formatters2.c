@@ -6,16 +6,32 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/19 15:58:00 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/22 14:14:37 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
+    // unsigned normal;
+    // unsigned *pointer;
+    // pointer = &normal;
+    // normal = (unsigned)pointer;
 int		format_p(int flags[], va_list args)
 {
-	printf("format string p: %s\n", print->format);
-	return (0);
+	int count;
+	unsigned *temp;
+	unsigned dec;
+	int len;
+
+	count = 0;
+	temp = (unsigned *)va_arg(args, void*);
+	dec = (unsigned)temp;
+	len = convert_to_hex(dec, 0);
+	if (flags[1] == 1) //left justify
+		count += format_p_left_helper(flags, dec);
+	else //right justify
+		count += format_p_right_helper(flags, dec, len);
+	return (count);
 }
 
 int		format_s(int flags[], va_list args) //first one you are working on 

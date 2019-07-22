@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/19 19:03:27 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/22 14:02:58 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,10 @@ int		format_c(int flags[], va_list args)
 	}
 	else
 	{
-		while (count < flags[5] - 1)
-		{
+		while (count++ < flags[5] - 1)
 			write(1, " ", 1);
-			count++;
-		}
 		write(1, &c, 1);
-		count++;
+		//count++; by doing it this way, the count++ on the top will account for the extra ++ needed on the bottom
 	}
 	return (count);
 }
