@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:43:01 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/19 18:21:43 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/23 16:18:59 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef struct s_print_struct
 	// void (*format_u)(unsigned int, t_print_struct *);
 	// void (*format_x)(int, t_print_struct *)
 	// void (*format_x_upper)(int, t_print_struct *);
-	int			flags[9];
+	int			flags[10];
 }				t_print_struct;
 
 int		ft_printf(const char *format, ...);

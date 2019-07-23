@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/19 18:27:02 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/23 16:20:33 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,13 @@ void	parse_set_flags(t_print_struct *print, char *format)
     else if (*format == '.')
         print->flags[6] = 1;
     else if (atoi(format) > 0)
-        print->flags[6] = atoi(format);
+        print->flags[7] = atoi(format);
     else if (*format == 'h' || *format == 'l')
         format = parse_set_len_mod(print, format);
     else if (is_conversion(format))
-        print->flags[8] = (int)(*format);
+        print->flags[9] = (int)(*format);
 	else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
-		print->flags[8] = -1;
+		print->flags[9] = -1;
 }
 
 // char *	parse_params(t_print_struct *print, char *format)
@@ -221,7 +221,8 @@ int     print_conversion(t_print_struct *print, va_list args)
 **           0           3           0/1
 **         ' '           4           0/1
 **        minw           5           0/minw
-**   precision           6           0/precision
-** 	length mod           7           0 (no flags) or 1, 2, 3, 4 (hh, h, l, ll)
-** conversions           8           letter to int, 37 (%) means we encountered another % before a conversion so get rid of everything and print the second %
+**   precision           6           0/1
+**	 precision           7           0/precision
+** 	length mod           8           0 (no flags) or 1, 2, 3, 4 (hh, h, l, ll)
+** conversions           9           letter to int, 37 (%) means we encountered another % before a conversion so get rid of everything and print the second %
 */

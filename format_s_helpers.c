@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:47:11 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/19 16:03:04 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/23 16:23:15 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		format_s_left(int flags[], char *temp, int len)
 	int 	count;
 
 	count = 0;
-	if (flags[6] > 0 && flags[6] < len)
+	if (flags[7] > 0 && flags[6] < len)
 	{
 		while (flags[6]-- > 0)
 		{
@@ -62,7 +62,7 @@ int		format_s_right(int flags[], char *temp, int len)
 
 	pad = 0;
 	count = 0;
-	if (flags[6] > 0 && flags[6] <= len)
+	if (flags[7] > 0 && flags[6] <= len)
 	{
 		count = format_s_right_helper(flags, temp, len);
 	}
@@ -91,10 +91,10 @@ int		format_s_right_helper(int flags[], char *temp, int len)
 	int count;
 	
 	count = 0;
-	if (flags[6] > flags[5]) //precision greater than minw, no need to justify
+	if (flags[7] > flags[5]) //precision greater than minw, no need to justify
 	{
 	    printf("precision %d, minw %d\n", flags[6], flags[5]);
-		while (flags[6]-- > 0)
+		while (flags[7]-- > 0)
 		{
 			count++;
 			write(1, temp++, 1);
@@ -103,12 +103,12 @@ int		format_s_right_helper(int flags[], char *temp, int len)
 	}
 	else //precision not as great as minw, need to pad the left side with stuff
 	{
-		while (count < flags[5] - flags[6])
+		while (count < flags[5] - flags[7])
 		{
 			count++;
 			write(1, " ", 1);
 		}
-		while (flags[6]-- > 0)
+		while (flags[7]-- > 0)
 		{
 			count++;
 			write(1, temp++, 1);

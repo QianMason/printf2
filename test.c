@@ -18,6 +18,25 @@ void    ft_putchar(char c)
     write(1, &c, 1);
 }
 
+int     get_int_length(unsigned n)
+{
+    int count;
+
+    count = 0;
+    while (n)
+    {
+        n /= 10;
+        count++;
+    }
+    return (n);
+}
+
+void    write_and_increment(char c)
+{
+    write(1, &c, 1);
+    return (1);
+}
+
 int    convert_to_hex(unsigned n, int flag)
 {
     unsigned temp;
