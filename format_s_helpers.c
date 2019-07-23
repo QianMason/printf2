@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:47:11 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/23 16:23:15 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/23 16:24:50 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int		format_s_left(int flags[], char *temp, int len)
 	int 	count;
 
 	count = 0;
-	if (flags[7] > 0 && flags[6] < len)
+	if (flags[7] > 0 && flags[7] < len)
 	{
-		while (flags[6]-- > 0)
+		while (flags[7]-- > 0)
 		{
 			write(1, temp, 1);
 			count++;
@@ -62,7 +62,7 @@ int		format_s_right(int flags[], char *temp, int len)
 
 	pad = 0;
 	count = 0;
-	if (flags[7] > 0 && flags[6] <= len)
+	if (flags[7] > 0 && flags[7] <= len)
 	{
 		count = format_s_right_helper(flags, temp, len);
 	}
@@ -93,7 +93,6 @@ int		format_s_right_helper(int flags[], char *temp, int len)
 	count = 0;
 	if (flags[7] > flags[5]) //precision greater than minw, no need to justify
 	{
-	    printf("precision %d, minw %d\n", flags[6], flags[5]);
 		while (flags[7]-- > 0)
 		{
 			count++;
