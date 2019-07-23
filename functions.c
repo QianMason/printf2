@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/22 21:52:39 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/07/23 14:52:52 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,10 @@ int     get_int_length(unsigned n)
         count++;
     }
     return (n);
+}
+
+void    write_and_increment(char c)
+{
+    write(1, &c, 1);
+    return (1);
 }
