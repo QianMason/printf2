@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/22 13:58:56 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/22 21:52:39 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,17 @@ int    convert_to_hex(unsigned n, int flag)
         write(1, &c, 1);
     count++;
     return (count);
+}
+
+int     get_int_length(unsigned n)
+{
+    int count;
+
+    count = 0;
+    while (n)
+    {
+        n /= 10;
+        count++;
+    }
+    return (n);
 }

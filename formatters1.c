@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/22 14:02:58 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/22 21:53:26 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,18 @@ int		format_c(int flags[], va_list args)
 
 int		format_d(int flags[], va_list args)
 {
+	int count;
+	int argument;
+
+	count = 0;
+	argument = va_arg(args, int); //should i try unsigned?
+	if (flags[1] == 1) //left align
+		count = format_d_left_helper(flags, args);
+	else
+		count = format_d_right_helper(flags, args);
+
 	printf("format string d: %s\n", print->format);
-	return (0);
+	return (count);
 }
 
 int		format_f(int flags[], va_list args)
