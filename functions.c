@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/23 14:52:52 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/24 20:22:45 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int    convert_to_hex(unsigned n, int flag)
     return (count);
 }
 
-int     get_int_length(unsigned n)
+int     get_int_len(intmax_t n)
 {
     int count;
 
@@ -42,11 +42,28 @@ int     get_int_length(unsigned n)
         n /= 10;
         count++;
     }
-    return (n);
+    return (count);
 }
 
-void    write_and_increment(char c)
+int     write_and_increment(char c)
 {
     write(1, &c, 1);
     return (1);
+}
+
+intmax_t    get_int_arg(int flags[], va_list args)
+{
+    intmax_t argument;
+    
+    if (flags[8] == 1)
+        argument = va_arg(args, signed char);
+    else if (flags[8] == 2)
+        argument = va_arg(args, short);
+    else if (flags[8] == 3)
+        argument = va_arg(args, long);
+    else if (flags[8] == 4)
+        argument = va_arg(args, long long);
+    else
+        argument = va_arg(args, int);
+    return (argument);
 }

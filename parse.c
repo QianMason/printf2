@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/23 16:20:33 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/24 20:43:26 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,13 @@
 
 int     parse_and_print(t_print_struct *print, va_list args)
 {
-	while (*(print->format))
+	while (*(print->format) && print->format)
 	{
 		if (*(print->format) == '%')
 		{
 			(print->format)++;
-			// if (print->flags[8] == 37)
-			// {
-			// 	write(1, print->format, 1);
-			// 	reset_flags(print);
-			// 	continue;
-			// }
 			print->format = parse_params(print, print->format);
-			print_table(print);
-            if (print->flags[8] > 0 && print->flags[8] != 37)
+            if (print->flags[9] > 0 && print->flags[9] != 37)
 			{
 			    (print->count) += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
 				reset_flags(print);
@@ -51,17 +44,18 @@ char *	parse_params(t_print_struct *print, char *format)
 	while (*format)
 	{
 		parse_set_flags(print, format);
+		//print_table(print);
         format++;
-        if (print->flags[8] > 0 && print->flags[8] != 37)
+        if (print->flags[9] > 0 && print->flags[9] != 37)
             return (format);
-		else if (print->flags[8] == 37)
+		else if (print->flags[9] == 37)
 		{
 			write(1, "%", 1);
 			(print->count)++;
 			reset_flags(print);
 			return (format);
 		}
-		else if (print->flags[8] == -1) //case where parse_set_flags found something that wasnt anything, so we write '%' since 
+		else if (print->flags[9] == -1) //case where parse_set_flags found something that wasnt anything, so we write '%' since 
 		{ //outer function moves format pointer over, and then start printing from there again
 			write(1, "%", 1);
 			(print->count)++;
@@ -80,7 +74,7 @@ void	parse_set_flags(t_print_struct *print, char *format)
 		print->flags[1] = 1;
 	else if (*format == '#')
 		print->flags[2] = 1;
-	else if (*format == '0')
+	else if (*format == '0' && print->flags[5] == 0 && print->flags[6] == 0)
 		print->flags[3] = 1;
 	else if (*format == ' ')
 		print->flags[4] = 1;
@@ -88,14 +82,14 @@ void	parse_set_flags(t_print_struct *print, char *format)
         print->flags[5] = atoi(format);
     else if (*format == '.')
         print->flags[6] = 1;
-    else if (atoi(format) > 0)
+    else if (atoi(format) > 0 && print->flags[6] == 1)
         print->flags[7] = atoi(format);
     else if (*format == 'h' || *format == 'l')
         format = parse_set_len_mod(print, format);
     else if (is_conversion(format))
         print->flags[9] = (int)(*format);
-	else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
-		print->flags[9] = -1;
+	//else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
+		//print->flags[9] = -1; <------- FIGURE THIS OUTSTISDHAKSJFHASKDJFHQ@$KHRKQ#JRH
 }
 
 // char *	parse_params(t_print_struct *print, char *format)
@@ -144,21 +138,21 @@ char *	parse_set_len_mod(t_print_struct *print, char *format)
 		{
 			if ((*(format + 1)) == 'h') // then hh
 			{
-				print->flags[7] = 1;
+				print->flags[8] = 1;
 				format++;
 			}
 			else
-				print->flags[7] = 2;
+				print->flags[8] = 2;
 		}
 		else
 		{
 			if ((*(format + 1)) == 'l')
 			{
-				print->flags[7] = 4;
+				print->flags[8] = 4;
 				format++;
 			}
 			else
-				print->flags[7] = 3;
+				print->flags[8] = 3;
 		}
 	}
 	return (format);
@@ -180,7 +174,7 @@ int     print_conversion(t_print_struct *print, va_list args)
 	int i;
 
 	i = 0;
-	i = print->formatters[letter_to_function((char)print->flags[8])](print->flags, args);
+	i = print->formatters[letter_to_function((char)print->flags[9])](print->flags, args);
 	return (i);
 }
 

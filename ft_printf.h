@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:43:01 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/23 16:18:59 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/24 17:03:38 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h> //remove this later
 # include "libft/includes/libft.h"
 # include <unistd.h>
+# include <stdint.h>
 
 typedef int conversion(int flags[], va_list args);
 
