@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 14:51:48 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/24 20:38:45 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/25 16:38:07 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,6 @@ int     d_right_helper_8(int flags[], int arg_len, intmax_t argument, int count)
     }
     else
     {
-        printf("went here instead\n");
-        //printf("value of flags[3] == %d\n", flags[3]);
-        // this portion of code below is identical to d_right_helper_5, so maybe just use that?
         if (flags[6] == 0 && flags[3] == 1) //minw > arg_len > precision
         {
             if (argument < 0)

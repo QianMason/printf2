@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 14:21:17 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/24 20:26:57 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/25 16:38:04 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ int		d_right_helper_5(int flags[], int arg_len, intmax_t argument, int count)
             count += write_and_increment('-');
             argument *= -1;
         }
+        else if (argument > 0)
+            count += write_and_increment('+');
         while (count < flags[5] - arg_len)
             count += write_and_increment('0');
     }
@@ -72,6 +74,8 @@ int		d_right_helper_5(int flags[], int arg_len, intmax_t argument, int count)
             count += write_and_increment('-');
             argument *= -1;
         }
+        else if (argument > 0)
+            count += write_and_increment('+');
         else
             count += write_and_increment(' ');
     }
@@ -79,6 +83,7 @@ int		d_right_helper_5(int flags[], int arg_len, intmax_t argument, int count)
     count += arg_len;
 	return (count);
 }
+
 
 
 int     d_right_helper_6(int flags[], int arg_len, intmax_t argument, int count)

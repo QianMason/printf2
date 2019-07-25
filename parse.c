@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/24 20:43:26 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/25 14:32:17 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,14 @@ void	parse_set_flags(t_print_struct *print, char *format)
         print->flags[5] = atoi(format);
     else if (*format == '.')
         print->flags[6] = 1;
-    else if (atoi(format) > 0 && print->flags[6] == 1)
+    else if (atoi(format) > 0 && print->flags[6] == 1 && print->flags[7] == 0)
         print->flags[7] = atoi(format);
     else if (*format == 'h' || *format == 'l')
-        format = parse_set_len_mod(print, format);
+        parse_set_len_mod(print, format);
     else if (is_conversion(format))
         print->flags[9] = (int)(*format);
 	//else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
-		//print->flags[9] = -1; <------- FIGURE THIS OUTSTISDHAKSJFHASKDJFHQ@$KHRKQ#JRH
+		//print->flags[9] = -1;
 }
 
 // char *	parse_params(t_print_struct *print, char *format)
@@ -130,32 +130,25 @@ void	parse_set_flags(t_print_struct *print, char *format)
 // 	return (format);
 // }
 
-char *	parse_set_len_mod(t_print_struct *print, char *format)
+void    parse_set_len_mod(t_print_struct *print, char *format)
 {
 	if (*format == 'h' || *format == 'l')
 	{
 		if (*format == 'h')
 		{
-			if ((*(format + 1)) == 'h') // then hh
-			{
+			if (print->flags[8] == 2) // then hh
 				print->flags[8] = 1;
-				format++;
-			}
 			else
 				print->flags[8] = 2;
 		}
-		else
+		else // *format == 'l'
 		{
-			if ((*(format + 1)) == 'l')
-			{
+			if (print->flags[8] == 3)
 				print->flags[8] = 4;
-				format++;
-			}
 			else
 				print->flags[8] = 3;
 		}
 	}
-	return (format);
 }
 
 int		is_conversion(char *format)

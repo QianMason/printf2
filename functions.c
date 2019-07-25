@@ -6,15 +6,15 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/24 20:22:45 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/25 16:44:55 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int    convert_to_hex(unsigned n, int flag)
+int    convert_to_hex(uintmax_t n, int flag)
 {
-    unsigned temp;
+    uintmax_t temp;
     char c;
     int count;
 
@@ -37,6 +37,8 @@ int     get_int_len(intmax_t n)
     int count;
 
     count = 0;
+    if (n == 0)
+        return (1);
     while (n)
     {
         n /= 10;
@@ -54,16 +56,25 @@ int     write_and_increment(char c)
 intmax_t    get_int_arg(int flags[], va_list args)
 {
     intmax_t argument;
+    //printf("value of flags[8] == %d\n", flags[8]);
     
     if (flags[8] == 1)
-        argument = va_arg(args, signed char);
+        argument = va_arg(args, signed char); //need to promote?
     else if (flags[8] == 2)
-        argument = va_arg(args, short);
+        argument = va_arg(args, int);
     else if (flags[8] == 3)
         argument = va_arg(args, long);
     else if (flags[8] == 4)
         argument = va_arg(args, long long);
     else
         argument = va_arg(args, int);
+    printf("end of get_int_arg func\n");
     return (argument);
+}
+
+int     not_valid_format(char c)
+{
+    if (c > 57 || c < 48)
+        return (1); //invalid
+    return (0);
 }
