@@ -22,7 +22,7 @@ void    ft_putchar(char c)
 intmax_t    get_int_arg(int flags[], va_list args)
 {
     intmax_t argument;
-    
+
     if (flags[8] == 1)
         argument = va_arg(args, signed char);
     else if (flags[8] == 2)
@@ -75,9 +75,9 @@ void	ft_putnbr(int n)
 }
 
 
-int    convert_to_hex(unsigned n, int flag)
+int    convert_to_hex(uintmax_t n, int flag)
 {
-    unsigned temp;
+    uintmax_t temp;
     char c;
     int count;
 
@@ -94,7 +94,6 @@ int    convert_to_hex(unsigned n, int flag)
     count++;
     return (count);
 }
-
 int		d_right_helper_3(int flags[], int arg_len, intmax_t argument, int count)
 {
     printf("drh3\n");
@@ -358,7 +357,7 @@ int		format_d_left_helper_1(int flags[], int arg_len, intmax_t argument, int cou
 {
     printf("in format_d_left_helper_1\n");
     intmax_t orig;
-    
+
     orig = argument;
 	if (argument < 0)
 	{
@@ -430,48 +429,166 @@ int		format_d_left(int flags[], intmax_t argument) //left align
 	return (count);
 }
 
-int     format_p_left_helper(int flags[], unsigned dec)
+int     format_p_left_helper_1(int flags[], uintmax_t dec, int len)
 {
+    // if precision is >= minw && >= arg_len
+    // left aligned so no 0 consideration
+    // but since precision might be greater, we print 0 until precision
     int count;
 
     count = 0;
-    write(1, "0x", 2);
-    count += 2;
-    if (flags[5] > 0) //minw
-    {
-        count += convert_to_hex(dec, 1);
-        while (count < flags[5])
-        {
-            write(1, " ", 1);
-            count++;
-        }
-    }
-    else
-        count += convert_to_hex(dec, 1); 
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += convert_to_hex(dec, 1);
     return (count);
 }
 
-int     format_p_right_helper(int flags[], unsigned dec, int len)
+int format_p_left_helper_2(int flags[], uintmax_t dec, int len)
+{
+    //if minw >= len && minw >= precision
+    //if len >= precision
+    //left aligned
+    int count;
+
+    count = 0;
+    count += convert_to_hex(dec, 1);
+    while (count + 2 < flags[5])
+        count += write_and_increment(' ');
+    return (count);
+}
+
+int format_p_left_helper_3(int flags[], uintmax_t dec, int len)
+{
+    // minw >= precision && minw >= arg_len
+    // precision > arg_len
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += convert_to_hex(dec, 1);
+    while (count + 2 < flags[5]) //because now we have to make sure, that the 0x is included in minw count
+        count += write_and_increment(' ');
+    return (count);
+}
+
+int     format_p_left_helper(int flags[], uintmax_t dec, int len)
+{
+    int count;
+
+    write(1, "0x", 2);
+    count += 2;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        count += convert_to_hex(dec, 1);
+        printf("above = len greatest\n");
+    }
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+    {
+        count += format_p_left_helper_1(flags, dec, len);
+        printf("above format_p_left_helper_1\n");
+    }
+    else if (flags[5] >= len && flags[5] >= flags[7])
+    {
+        if (len >= flags[7])
+        {
+            count += format_p_left_helper_2(flags, dec, len);
+            printf("above was format_p_left_helper_2\n");
+        }
+        else // minw >= precision > len
+        {
+            count += format_p_left_helper_3(flags, dec, len);
+            printf("left format_p_left_helper_3\n");
+        }
+    }
+    return (count);
+}
+
+int		format_p_right_helper_1(int flags[], uintmax_t dec, int len)
+{
+	// precision greatest, essentially left justified even though its right justified
+	//already wrote the "0x", just write the rest of the zeros up to precision - length of the argument, then fill the rest with the converetd hex
+	int count;
+
+	count = 0;
+	while (count < flags[7] - len)
+		count += write_and_increment('0');
+	count += convert_to_hex(dec, 1);
+	return (count);
+}
+
+int		format_p_right_helper_2(int flags[], uintmax_t dec, int len)
+{
+	// minw is greatest
+	// arg_len >= precision
+	int count;
+
+	count = 0;
+	while (count < flags[5] - len - 2)
+		count += write_and_increment(' ');
+	write(1, "0x", 2);
+	count += 2;
+	count += convert_to_hex(dec, 1);
+	return (count);
+}
+
+int		format_p_right_helper_3(int flags[], uintmax_t dec, int len)
+{
+	//minw >= precision && minw >= arg_len
+	// min precision > arg_len
+	int count;
+
+	count = 0;
+	if (flags[5] - flags[7] > 2)
+	{
+		while (count < flags[5] - flags[7] - 2)
+			count += write_and_increment(' ');
+		write(1, "0x", 2);
+		count += 2;
+		while (count < flags[5] - len)
+			count += write_and_increment('0');
+		count += convert_to_hex(dec, 1);
+	}
+	else // if (flags[5] - flags[7] <= 2)
+	{
+		write(1, "0x", 2);
+		count += 2;
+		count += format_p_left_helper_1(flags, dec, len);
+	}
+	return (count);
+}
+
+int     format_p_right_helper(int flags[], uintmax_t dec, int len)
 {
     int count;
 
     count = 0;
-    if (len + 2 > flags[5]) //since 0x
-    {
-        write(1, "0x", 2);
-        count +=2;
+    if (len >= flags[5] && len >= flags[7])
+	{
+	    printf("regular call\n");
+		write(1, "0x", 2);
+		count += 2;
         count += convert_to_hex(dec, 1);
-    }
-    else
+	}
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+	{
+	    printf("in format_p_right_helper_1\n");
+		write(1, "0x", 2);
+		count += 2;
+        count += format_p_right_helper_1(flags, dec, len);
+	}
+    else if (flags[5] >= len && flags[5] >= flags[7])
     {
-        while (count < (flags[5] - (len + 2)))
+        if (len >= flags[7])
         {
-            write(1, " ", 1);
-            count++;
+            printf("in format_p_right_helper_2\n");
+            count += format_p_right_helper_2(flags, dec, len);
         }
-        write(1, "0x", 2);
-        count += 2;
-        count += convert_to_hex(dec, 1);
+        else // minw >= precision > len
+        {
+            printf("in format_p_right_helper_3\n");
+            count += format_p_right_helper_3(flags, dec, len);
+        }
     }
     return (count);
 }
@@ -487,7 +604,7 @@ int		format_s_left_helper(int flags[], char *temp, int len)
 		write(1, temp, 1);
 		temp++;
 	}
-	while (count < flags[5]) //pad down spaces until end of minw 
+	while (count < flags[5]) //pad down spaces until end of minw
 	{
 		write(1, " ", 1);
 		count++;
@@ -522,7 +639,7 @@ int		format_s_left(int flags[], char *temp, int len)
 int		format_s_right_helper(int flags[], char *temp, int len)
 {
 	int count;
-	
+
 	count = 0;
 	if (flags[6] > flags[5]) //precision greater than minw, no need to justify
 	{
@@ -603,7 +720,7 @@ int		format_c(int flags[], va_list args)
 		}
 	}
 	else
-	{ 
+	{
 	    //printf("right justify call\n");
 		while (count < flags[5] - 1)
 		{
@@ -652,27 +769,32 @@ int		format_o(int flags[], va_list args)
 int		format_p(int flags[], va_list args)
 {
 	int count;
-	unsigned *temp;
-	unsigned dec;
+	void *temp;
+	uintmax_t dec;
 	int len;
 
 	count = 0;
-	temp = (unsigned *)va_arg(args, void*);
-	dec = (unsigned)temp;
+	temp = va_arg(args, void*);
+	dec = (uintmax_t)temp;
 	len = convert_to_hex(dec, 0);
-	if (flags[1] == 1) //left justify
-		count += format_p_left_helper(flags, dec);
+	if (!temp)
+	{
+		write(1, "0x0", 3);
+		count += 3;
+	}
+	else if (flags[1] == 1) //left justify
+		count += format_p_left_helper(flags, dec, len);
 	else //right justify
 		count += format_p_right_helper(flags, dec, len);
 	return (count);
 }
 
-int		format_s(int flags[], va_list args) //first one you are working on 
+int		format_s(int flags[], va_list args) //first one you are working on
 {
 	int count;
 	char *temp;
 	char *len;
-	
+
 	temp = va_arg(args, char *);
 	len = strlen(temp);
 	if (!flags[5] && !flags[6])
@@ -852,10 +974,10 @@ void	parse_set_flags(t_print_struct *print, char *format)
         print->flags[5] = atoi(format);
     else if (*format == '.')
         print->flags[6] = 1;
-    else if (atoi(format) > 0 && print->flags[6] == 1)
+    else if (atoi(format) > 0 && print->flags[6] == 1 && print->flags[7] == 0)
         print->flags[7] = atoi(format);
     else if (*format == 'h' || *format == 'l')
-        format = parse_set_len_mod(print, format);
+        parse_set_len_mod(print, format);
     else if (is_conversion(format))
         print->flags[9] = (int)(*format);
 	//else //within the format, the current char is none of the modifiers or params, so we simply stop considering and assign it a negative value
@@ -881,7 +1003,7 @@ char *	parse_params(t_print_struct *print, char *format)
 			reset_flags(print);
 			return (format);
 		}
-		else if (print->flags[9] == -1) //case where parse_set_flags found something that wasnt anything, so we write '%' since 
+		else if (print->flags[9] == -1) //case where parse_set_flags found something that wasnt anything, so we write '%' since
 		{ //outer function moves format pointer over, and then start printing from there again
 			write(1, "%", 1);
 			(print->count)++;
@@ -901,6 +1023,7 @@ int     parse_and_print(t_print_struct *print, va_list args)
 		{
 			(print->format)++;
 			print->format = parse_params(print, print->format);
+			//print_table(print);
             if (print->flags[9] > 0 && print->flags[9] != 37)
 			{
 			    (print->count) += print_conversion(print, args); //function that will call mapping function to get specific function for proper specifier
@@ -931,21 +1054,14 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    // int j = ft_printf("%s\n%s", "this is a string,", "and this is the next line\n");
-    // printf("\n");
-    // printf("length of print: %d\n", j);
-    // int k = printf("%s\n%s", "this is a string,", "and this is the next line\n");
-    // printf("\n");
-    // printf("length of print: %d\n", k);
-    // int i = printf("%5.6% %s\n", "string");
-    // printf("value of printf = i: %d\n", i);
-    // int j = ft_printf("%5.6% %s\n", "string");
-    // printf("value of ft_printf = j: %d\n", j);
-    printf("format string: %%+015d\n");
-    int i = printf("%+d", -3245);
-    printf("value of printf = i: %d\n", i);
-    int j = ft_printf("%+d", -3245);
-    printf("value of ft_printf = j: %d\n", j);
+    printf("format string: %%-20.19p\n");
+    int i = 23002342;
+    int *j = &i;
+    int k = printf("%-.19p", j);
+    printf("to the left is printf call\n");
+    int l = ft_printf("%-.19p", j);
+    printf("\nValue of printf call: %d\n", k);
+    printf("Value of ft_printf call: %d\n", l);
     return (0);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/25 16:40:16 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/27 19:41:42 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,18 +33,18 @@ int		format_p(int flags[], va_list args)
 		count += 3;
 	}
 	else if (flags[1] == 1) //left justify
-		count += format_p_left_helper(flags, dec);
+		count += format_p_left_helper(flags, dec, len);
 	else //right justify
 		count += format_p_right_helper(flags, dec, len);
 	return (count);
 }
 
-int		format_s(int flags[], va_list args) //first one you are working on 
+int		format_s(int flags[], va_list args) //first one you are working on
 {
 	int count;
 	char *temp;
 	char *len;
-	
+
 	temp = va_arg(args, char *);
 	len = strlen(temp);
 	if (!flags[5] && !flags[6])
