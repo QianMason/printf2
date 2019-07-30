@@ -912,21 +912,21 @@ char *	parse_set_len_mod(t_print_struct *print, char *format)
 		{
 			if ((*(format + 1)) == 'h') // then hh
 			{
-				print->flags[7] = 1;
+				print->flags[8] = 1;
 				format++;
 			}
 			else
-				print->flags[7] = 2;
+				print->flags[8] = 2;
 		}
 		else
 		{
 			if ((*(format + 1)) == 'l')
 			{
-				print->flags[7] = 4;
+				print->flags[8] = 4;
 				format++;
 			}
 			else
-				print->flags[7] = 3;
+				print->flags[8] = 3;
 		}
 	}
 	return (format);

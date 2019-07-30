@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 18:07:45 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 12:17:22 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 12:42:16 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 //     return (count);
 // }
 
-int     format_p_right_helper(int flags[], uintmax_t dec, int len)
+int     format_p_right(int flags[], uintmax_t dec, int len)
 {
     int count;
 

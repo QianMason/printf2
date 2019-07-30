@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/25 16:44:55 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 14:04:19 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,22 @@ int    convert_to_hex(uintmax_t n, int flag)
     else
         c = temp + 87;
     count = convert_to_hex(n/16, flag);
+    if (flag == 1)
+        write(1, &c, 1);
+    count++;
+    return (count);
+}
+
+int     convert_to_octal(uintmax_t n, int flag)
+{
+    uintmax_t temp;
+    char c;
+    int count;
+    if (!n)
+        return (0);
+    temp = n % 8;
+    c = temp + 48;
+    count = convert_to_octal(n / 8, flag);
     if (flag == 1)
         write(1, &c, 1);
     count++;

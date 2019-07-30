@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/24 20:41:14 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 14:04:34 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,18 @@ int		format_i(int flags[], va_list args)
 
 int		format_o(int flags[], va_list args)
 {
-	printf("%s", print->format);
-	return (0);
+	int count;
+	uintmax_t argument;
+	int len;
+
+	count = 0;
+	argument = (uintmax_t)get_int_arg(flags, args); //this might give you issues
+	len = convert_to_octal(argument, 0);
+	if (flags[1] == 1) //left align
+		count = format_o_left(flags, argument);
+	else
+		count = format_o_right(flags, argument);
+	return (count);
 }
 
 // void format_c(char *format)

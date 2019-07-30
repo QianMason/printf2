@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/27 19:41:42 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/07/30 12:42:19 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ int		format_p(int flags[], va_list args)
 		count += 3;
 	}
 	else if (flags[1] == 1) //left justify
-		count += format_p_left_helper(flags, dec, len);
+		count += format_p_left(flags, dec, len);
 	else //right justify
-		count += format_p_right_helper(flags, dec, len);
+		count += format_p_right(flags, dec, len);
 	return (count);
 }
 

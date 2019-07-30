@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   format_p_helpers.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 14:03:54 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/28 20:40:18 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/07/30 12:42:18 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 //     return (count);
 // }
 
-int     format_p_left_helper(int flags[], uintmax_t dec, int len)
+int     format_p_left(int flags[], uintmax_t dec, int len)
 {
     int count;
 
