@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   format_p_helpers_2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/28 18:07:45 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/28 20:12:18 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/07/30 12:17:22 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,22 @@ int		format_p_right_helper_2(int flags[], uintmax_t dec, int len)
 	int count;
 
 	count = 0;
-	while (count < flags[5] - len - 2)
-		count += write_and_increment(' ');
-	write(1, "0x", 2);
-	count += 2;
-	count += convert_to_hex(dec, 1);
+	if (flags[6] == 0 && flags[3] == 1)
+	{
+		write(1, "0x", 2);
+		count += 2;
+		while (count < flags[5] - len)
+			count += write_and_increment('0');
+		count += convert_to_hex(dec, 1);
+	}
+	else
+	{
+		while (count < flags[5] - len - 2)
+			count += write_and_increment(' ');
+		write(1, "0x", 2);
+		count += 2;
+		count += convert_to_hex(dec, 1);		
+	}
 	return (count);
 }
 
