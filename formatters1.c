@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 14:04:34 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 15:59:44 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,11 @@ int		format_o(int flags[], va_list args)
 
 	count = 0;
 	argument = (uintmax_t)get_int_arg(flags, args); //this might give you issues
-	len = convert_to_octal(argument, 0);
+	len = (argument > 0) ? convert_to_octal(argument, 0) : 1;
 	if (flags[1] == 1) //left align
-		count = format_o_left(flags, argument);
+		count = format_o_left(flags, argument, len);
 	else
-		count = format_o_right(flags, argument);
+		count = format_o_right(flags, argument, len);
 	return (count);
 }
 

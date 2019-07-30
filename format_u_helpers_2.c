@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 15:23:53 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 15:27:59 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 16:16:50 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int     format_u_right(int flags[], uintmax_t argument, int len)
 
     count = 0;
     if (len >= flags[5] && len >= flags[7])
-        count += print_uint_max(argument, 1);
+        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_u_right_helper_1(flags, argument, len);
     else if (flags[5] >= len && flags[5] >= flags[7])
@@ -37,8 +37,8 @@ int     format_u_right_helper_1(int flags[], uintmax_t argument, int len)
 
     count = 0;
     while (count < flags[7] - len)
-        count += write_and_increment('0')
-    count += print_uint_max(argument, 1);
+        count += write_and_increment('0');
+    count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
     return (count);
 }
 
@@ -51,13 +51,26 @@ int     format_u_right_helper_2(int flags[], uintmax_t argument, int len)
     {
         while (count < flags[5] - len)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1);
+        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
     }
     else
     {
         while (count < flags[5] - len)
-            count += write_and_increment('0');
+            count += write_and_increment(' ');
         count += print_uint_max(argument, 1);
     }
+    return (count);
+}
+
+int     format_u_right_helper_3(int flags[], uintmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    while (count < flags[5] - flags[7])
+        count += write_and_increment(' ');
+    while (count < flags[5] - len)
+        count += write_and_increment('0');
+    count += print_uint_max(argument, 1);
     return (count);
 }
