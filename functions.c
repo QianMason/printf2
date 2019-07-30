@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 14:04:19 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 15:04:07 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,38 @@ int     convert_to_octal(uintmax_t n, int flag)
     return (count);
 }
 
+int     print_uint_max(uintmax_t n, int flag)
+{
+    uintmax_t temp;
+    char c;
+    int count;
+    if (!n)
+        return (0);
+    temp = n % 10;
+    c = temp + 48;
+    count = print_uint_max(n / 10, flag);
+    if (flag == 1)
+        write(1, &c, 1);
+    count++;
+    return (count);
+}
+
 int     get_int_len(intmax_t n)
+{
+    int count;
+
+    count = 0;
+    if (n == 0)
+        return (1);
+    while (n)
+    {
+        n /= 10;
+        count++;
+    }
+    return (count);
+}
+
+int     get_uint_len(uintmax_t n)
 {
     int count;
 

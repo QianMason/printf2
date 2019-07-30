@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 12:42:19 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 15:28:18 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,18 @@ int		format_s(int flags[], va_list args) //first one you are working on
 
 int		format_u(int flags[], va_list args)
 {
-	printf("format string u: %s\n", print->format);
-	return (0);
+	int count;
+	uintmax_t argument;
+	int len;
+
+	count = 0;
+	argument = (uintmax_t)get_int_arg(flags, args); //this might give you issues
+	len = get_uint_len(argument);
+	if (flags[1] == 1) //left align
+		count = format_u_left(flags, argument, len);
+	else
+		count = format_u_right(flags, argument, len);
+	return (count);
 }
 
 int		format_x(int flags[], va_list args)
