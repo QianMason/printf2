@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 19:17:27 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 21:07:41 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ int		format_x(int flags[], va_list args)
 	int count;
 	uintmax_t argument;
 	int len;
-	
+
 	count = 0;
 	argument = (uintmax_t)get_int_arg(flags, args);
-	len = convert_to_hex(argument, 0);
+	len = (argument > 0) ? convert_to_hex(argument, 0) : 1;
 	if (flags[1] == 1)
 		count = format_x_left(flags, argument, len);
 	else
@@ -105,10 +105,10 @@ int		format_x_upper(int flags[], va_list args)
 	int count;
 	uintmax_t argument;
 	int len;
-	
+
 	count = 0;
 	argument = (uintmax_t)get_int_arg(flags, args);
-	len = convert_to_hex_upper(argument, 0);
+	len = (argument > 0) ? convert_to_hex_upper(argument, 0) : 1;
 	if (flags[1] == 1)
 		count = format_x_upper_left(flags, argument, len);
 	else
