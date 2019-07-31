@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 21:07:41 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/07/31 15:27:53 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ int		format_s(int flags[], va_list args) //first one you are working on
 {
 	int count;
 	char *temp;
-	char *len;
+	int	len;
 
 	temp = va_arg(args, char *);
 	len = strlen(temp);
-	if (!flags[5] && !flags[6])
+	if (!flags[5] && !flags[7])
 	{
 		write(1, temp, len);
 		return (len);
@@ -55,15 +55,9 @@ int		format_s(int flags[], va_list args) //first one you are working on
 	else
 	{
 		if (flags[1] == 1)
-		{
-		    printf("format s left call\n");
 		    count = format_s_left(flags, temp, len); //non default behavior
-		}
 		else
-		{
-		    printf("format s right call\n");
 			count = format_s_right(flags, temp, len); //default behavior
-		}
 	}
 	return (count);
 }

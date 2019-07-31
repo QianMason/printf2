@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 19:34:25 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/31 13:19:45 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int     get_uint_len(uintmax_t n)
     return (count);
 }
 
-int     write_and_increment(char c)
+int     write_and_increment(wint_t c)
 {
     write(1, &c, 1);
     return (1);
@@ -145,3 +145,14 @@ int     not_valid_format(char c)
         return (1); //invalid
     return (0);
 }
+
+// wint_t  get_char_arg(int flags[], va_list args)
+// {
+//     wint_t c;
+
+//     if (flags[8] == 'l')
+//         c = va_arg(args, wint_t);
+//     else
+//         c = va_arg(args, unsigned char);
+//     return (c);
+// }

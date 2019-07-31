@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/18 16:47:11 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/23 16:24:50 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/31 14:40:14 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,105 +14,53 @@
 
 int		format_s_left(int flags[], char *temp, int len)
 {
-	int 	count;
+	int count;
 
 	count = 0;
-	if (flags[7] > 0 && flags[7] < len)
+    if (len >= flags[5] && len >= flags[7])
+    {
+		write(1, temp, len);
+		count += len;
+    }
+	else if (flags[5] >= len && flags[5] >= flags[7])
 	{
-		while (flags[7]-- > 0)
-		{
-			write(1, temp, 1);
-			count++;
-			temp++;
-		}
+		if (len >= flags[7] && flags[7] > 0)
+			count += format_s_left_helper_1(flags, temp, len);
+		else
+			count += format_s_left_helper_2(flags, temp, len); //precision ignored since greater than len
+		
+	}
+	else if (flags[7] >= len && flags[7] >= flags[5]) //precision ignored
+	{
+		write(1, temp, len);
+		count += len;
 		while (count < flags[5])
-		{
-		    count++;
-			write(1, " ", 1);
-		}
+			count += write_and_increment(' ');
 	}
-	else //no consideration for precision, as long as minw is greater than len, pad til minw, else, just write out the string
-		count = format_s_left_helper(flags, temp, len);
-	return (count);
+    return (count);
 }
 
-int		format_s_left_helper(int flags[], char *temp, int len)
-{
-	int		count;
-
-	count = 0;
-	while (count < len) //putchar til end of string
-	{
-		count++;
-		write(1, temp, 1);
-		temp++;
-	}
-	while (count < flags[5]) //pad down spaces until end of minw 
-	{
-		write(1, " ", 1);
-		count++;
-	}
-	return (count);
-}
-
-int		format_s_right(int flags[], char *temp, int len)
-{
-	int pad;
-	int	count;
-
-	pad = 0;
-	count = 0;
-	if (flags[7] > 0 && flags[7] <= len)
-	{
-		count = format_s_right_helper(flags, temp, len);
-	}
-	else //no considerations for precision again since its greater than strlen or 0 so all we do is print normally
-	{
-		if (len >= flags[5])
-			count = format_s_left(flags, temp, len); //then it just becomes the left justify case
-		else //len < minw, so we need padding
-		{
-			while (pad++ < flags[5] - len)
-			{
-				count++;
-				write(1, " ", 1);
-				temp++;
-			}
-			while (count++ < len)
-				write(1, temp++, 1);
-				//temp++
-		}
-	}
-	return (count);
-}
-
-int		format_s_right_helper(int flags[], char *temp, int len)
+int		format_s_left_helper_1(int flags[], char *temp, int len)
 {
 	int count;
-	
+
 	count = 0;
-	if (flags[7] > flags[5]) //precision greater than minw, no need to justify
-	{
-		while (flags[7]-- > 0)
-		{
-			count++;
-			write(1, temp++, 1);
-			//temp++;
-		}
-	}
-	else //precision not as great as minw, need to pad the left side with stuff
-	{
-		while (count < flags[5] - flags[7])
-		{
-			count++;
-			write(1, " ", 1);
-		}
-		while (flags[7]-- > 0)
-		{
-			count++;
-			write(1, temp++, 1);
-			//temp++;
-		}
-	}
+	write(1, temp, flags[7]); //write up to precision first
+	count += flags[7];
+	while (count < flags[5]);
+		count += write_and_increment(' ');
+	return (count);
+}
+
+int		format_s_left_helper_2(int flags[], char *temp, int len)
+{
+	//precision greater than len so ignore
+	int count;
+
+	count = 0;
+	write(1, temp, len);
+	count += len;
+	while (count < flags[5])
+		count += write_and_increment(' ');
 	return (count);
 }

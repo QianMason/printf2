@@ -6,37 +6,23 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 16:46:10 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/31 13:19:40 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int		format_c(int flags[], va_list args)
+int     format_c(int flags[], va_list args)
 {
-	int count;
-	char c;
-
-	count = 0;
-	c = va_arg(args, int);
-	if (flags[1] == 1) //left justify
-	{
-		count++;
-		write(1, &c, 1);
-		while (count < flags[5])
-		{
-			write(1, " ", 1);
-			count++;
-		}
-	}
-	else
-	{
-		while (count++ < flags[5] - 1)
-			write(1, " ", 1);
-		write(1, &c, 1);
-		//count++; by doing it this way, the count++ on the top will account for the extra ++ needed on the bottom
-	}
-	return (count);
+    int count;
+    wint_t c;
+    
+    c = va_arg(args, wint_t);
+    if (flags[1] == 1)
+        count = format_c_left(flags, c);
+    else
+        count = format_c_right(flags, c);
+    return (count);
 }
 
 int		format_d(int flags[], va_list args)
