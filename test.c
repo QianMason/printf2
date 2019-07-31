@@ -863,7 +863,7 @@ int     format_o_left(int flags[], uintmax_t argument, int len)
     count = 0;
     if (len >= flags[5] && len >= flags[7])
     {
-        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
             count += 0;
         else if (flags[7] == 0 && flags[6] == 1)
             count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
@@ -947,7 +947,7 @@ int     format_o_right(int flags[], uintmax_t argument, int len)
     count = 0;
     if (len >= flags[5] && len >= flags[7])
     {
-        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
             count += 0;
         else if (flags[7] == 0 && flags[6] == 1)
             count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
@@ -1094,7 +1094,7 @@ int     format_u_right(int flags[], uintmax_t argument, int len)
     count = 0;
     if (len >= flags[5] && len >= flags[7])
     {
-        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0  && argument == 0)
             count += 0;
         else if (flags[7] == 0 && flags[6] == 1)
             count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
@@ -1160,7 +1160,7 @@ int     format_u_left(int flags[], uintmax_t argument, int len)
     count = 0;
     if (len >= flags[5] && len >= flags[7])
     {
-        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
             count += 0;
         else if (flags[7] == 0 && flags[6] == 1)
             count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
@@ -1195,10 +1195,165 @@ int		format_u(int flags[], va_list args)
 	return (count);
 }
 
+int     format_x_left(int flags[], uintmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    }
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+        count += format_x_left_helper_1(flags, argument, len);
+    else if (flags[5] >= len && flags[5] >= flags[7])
+    {
+        if (len >= flags[7])
+            count += format_x_left_helper_2(flags, argument, len);
+        else
+            count += format_x_left_helper_3(flags, argument, len);
+    }
+    return (count);
+}
+
+int     format_x_left_helper_1(int flags[], uintmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    return (count);
+}
+
+int     format_x_left_helper_2(int flags[], uintmax_t argument, int len)
+{
+    //minw >= both
+    // len >= precision
+    int count;
+
+    count = 0;
+    if (flags[7] == 0 && flags[6] == 1)
+        count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment(' ');
+    else
+        count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    while (count < flags[5])
+        count += write_and_increment(' ');
+    return (count);
+}
+
+int     format_x_left_helper_3(int flags[], uintmax_t argument, int len)
+{
+     //minw >= both
+    //precision > len
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    while (count < flags[5])
+        count += write_and_increment(' ');   
+}
+
+int     format_x_right_helper_1(int flags[], uintmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    return (count);
+}
+
+int     format_x_right_helper_2(int flags[], uintmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    if (flags[6] == 0 && flags[3] == 1)
+    {
+        while (count < flags[5] - len)
+            count += write_and_increment('0');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    }
+    else
+    {
+        while (count < flags[5] - len)
+            count += write_and_increment(' ');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    }
+    return (count);    
+}
+
+int     format_x_right_helper_3(int flags[], uintmax_t argument, int len)
+{
+    //minw greatest
+    // precision > len
+    int count;
+
+    count = 0;
+    while (count < flags[5] - flags[7])
+        count += write_and_increment(' ');
+    while (count < flags[5] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    return (count);    
+}
+
+int     format_x_right(int flags[], uintmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
+    }
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+        count += format_x_right_helper_1(flags, argument, len);
+    else if (flags[5] >= len && flags[5] >= flags[7])
+    {
+        if (len >= flags[7])
+            count += format_x_right_helper_2(flags, argument, len);
+        else
+            count += format_x_right_helper_3(flags, argument, len);
+    }
+    return (count);    
+}
+
 int		format_x(int flags[], va_list args)
 {
-	printf("format string x");
-	return (0);
+	int count;
+	uintmax_t argument;
+	int len;
+	
+	count = 0;
+	argument = (uintmax_t)get_int_arg(flags, args);
+	len = convert_to_hex(argument, 0);
+	if (flags[1] == 1)
+		count = format_x_left(flags, argument, len);
+	else
+		count = format_x_right(flags, argument, len);
+	return (count);
 }
 
 int		format_x_upper(int flags[], va_list args)
@@ -1419,11 +1574,12 @@ int     main(void)
 {
     int i = 2000;
     uintmax_t q = 0;
+    uintmax_t r = 2342342838423;
     uintmax_t p = 1844674407370955161;
-    printf("format string: %%1.u\n");
-    int j = printf("%-1.u| <- real", q);
+    printf("format string: %%-1.x\n");
+    int j = printf("%-.x| <- real", r);
     printf("\n");
-    int k = ft_printf("%-1.u| <- mine", q);
+    int k = ft_printf("%-.x| <- mine", r);
     printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
     // printf("to the left is printf call\n");
     // int l = ft_printf("%020.p", j);
