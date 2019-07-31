@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/31 15:27:53 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/31 16:11:13 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ int		format_s(int flags[], va_list args) //first one you are working on
 
 	temp = va_arg(args, char *);
 	len = strlen(temp);
-	if (!flags[5] && !flags[7])
+    if (!flags[5] && !flags[7] && flags[6] == 1)
+		return (0);
+	else if (!flags[5] && !flags[7])
 	{
 		write(1, temp, len);
 		return (len);

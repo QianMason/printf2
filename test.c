@@ -666,113 +666,6 @@ int     format_p_right_helper(int flags[], uintmax_t dec, int len)
     return (count);
 }
 
-int		format_s_left_helper(int flags[], char *temp, int len)
-{
-	int		count;
-
-	count = 0;
-	while (count < len) //putchar til end of string
-	{
-		count++;
-		write(1, temp, 1);
-		temp++;
-	}
-	while (count < flags[5]) //pad down spaces until end of minw
-	{
-		write(1, " ", 1);
-		count++;
-	}
-	return (count);
-}
-
-int		format_s_left(int flags[], char *temp, int len)
-{
-	int 	count;
-
-	count = 0;
-	if (flags[6] > 0 && flags[6] < len)
-	{
-		while (flags[6]-- > 0)
-		{
-			write(1, temp, 1);
-			count++;
-			temp++;
-		}
-		while (count < flags[5])
-		{
-		    count++;
-			write(1, " ", 1);
-		}
-	}
-	else //no consideration for precision, as long as minw is greater than len, pad til minw, else, just write out the string
-		count = format_s_left_helper(flags, temp, len);
-	return (count);
-}
-
-int		format_s_right_helper(int flags[], char *temp, int len)
-{
-	int count;
-
-	count = 0;
-	if (flags[6] > flags[5]) //precision greater than minw, no need to justify
-	{
-	    printf("precision %d, minw %d\n", flags[6], flags[5]);
-		while (flags[6]-- > 0)
-		{
-			count++;
-			write(1, temp++, 1);
-			//temp++;
-		}
-	}
-	else //precision not as great as minw, need to pad the left side with stuff
-	{
-		while (count < flags[5] - flags[6])
-		{
-			count++;
-			write(1, " ", 1);
-		}
-		while (flags[6]-- > 0)
-		{
-			count++;
-			write(1, temp++, 1);
-			//temp++;
-		}
-	}
-	return (count);
-}
-
-int		format_s_right(int flags[], char *temp, int len)
-{
-	int pad;
-	int	count;
-
-	pad = 0;
-	count = 0;
-	if (flags[6] > 0 && flags[6] <= len)
-	{
-	    //printf("format_s_right_helper call\n");
-		count = format_s_right_helper(flags, temp, len);
-	}
-	else //no considerations for precision again since its greater than strlen or 0 so all we do is print normally
-	{
-		if (len >= flags[5])
-			count = format_s_left(flags, temp, len); //then it just becomes the left justify case
-		else //len < minw, so we need padding
-		{
-			while (pad++ < flags[5] - len)
-			{
-				count++;
-				write(1, " ", 1);
-				temp++;
-			}
-			while (count++ < len)
-				write(1, temp++, 1);
-				//temp++
-		}
-	}
-	return (count);
-}
-
 int		format_c(int flags[], va_list args)
 {
 	int count;
@@ -1024,15 +917,165 @@ int		format_p(int flags[], va_list args)
 	return (count);
 }
 
+int		format_s_left_helper_1(int flags[], char *temp, int len)
+{
+    printf("fslh1\n");
+	int count;
+
+	count = 0;
+    if (flags[7] == 0 && flags[6] == 0)
+    {
+        write(1, temp, len);
+        count += len;
+    }
+    else
+    {
+        write(1, temp, flags[7]);
+        count += flags[7];
+        while (count < flags[5])
+            count += write_and_increment(' ');
+    }
+    return (count);
+}
+
+int		format_s_left_helper_2(int flags[], char *temp, int len)
+{;
+	int count;
+
+	count = 0;
+	write(1, temp, flags[7]); //write up to precision first
+	count += flags[7];
+	while (count < flags[5])
+		count += write_and_increment(' ');
+	return (count);
+}
+
+int		format_s_left_helper_3(int flags[], char *temp, int len)
+{
+    printf("fslh3\n");
+	//precision greater than len so ignore
+	int count;
+
+	count = 0;
+	write(1, temp, len);
+	count += len;
+	while (count < flags[5])
+		count += write_and_increment(' ');
+	return (count);
+}
+
+int		format_s_left(int flags[], char *temp, int len)
+{
+	int count;
+
+	count = 0;
+    if (len >= flags[5] && len >= flags[7])
+		count += format_s_left_helper_1(flags, temp, len);
+	else if (flags[5] >= len && flags[5] >= flags[7])
+	{
+		if (len >= flags[7] && flags[7] > 0)
+			count += format_s_left_helper_2(flags, temp, len);
+		else
+			count += format_s_left_helper_3(flags, temp, len); //precision ignored since greater than len
+		
+	}
+	else if (flags[7] >= len && flags[7] >= flags[5]) //precision ignored
+	{
+		write(1, temp, len);
+		count += len;
+		while (count < flags[5])
+			count += write_and_increment(' ');
+	}
+    return (count);
+}
+
+int     format_s_right_helper_1(int flags[], char *temp, int len)
+{
+    //case where length is the greatest of them all, so the only other
+    //consideration is the precision
+    int count;
+
+    count = 0;
+    if (flags[7] == 0 && flags[6] == 0)
+    {
+        write(1, temp, len);
+        count += len;
+    }
+    else
+    {
+        while (count < flags[5] - flags[7])
+            count += write_and_increment(' ');
+        write(1, temp, flags[7]);
+        count += flags[7];
+    }
+    return (count);
+}
+
+int     format_s_right_helper_2(int flags[], char *temp, int len)
+{
+    //case where length is greater than precision and minw greater than all
+    //want to print out spaces until minw - precision then write precision worth of char 
+    //from temp
+    int count;
+
+    count = 0;
+    while (count < flags[5] - flags[7])
+        count += write_and_increment(' ');
+    write(1, temp, flags[7]);
+    count += flags[7];
+    return (count);
+}
+
+int     format_s_right_helper_3(int flags[], char *temp, int len)
+{
+    //case where precision is ignored since it is larger
+    int count;
+
+    count = 0;
+    while (count < flags[5] - len)
+        count += write_and_increment(' ');
+    write(1, temp, len);
+    count += len;
+    return (count);
+}
+
+
+int     format_s_right(int flags[], char *temp, int len)
+{
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+		count += format_s_right_helper_1(flags, temp, len);
+	else if (flags[5] >= len && flags[5] >= flags[7])
+	{
+		if (len >= flags[7] && flags[7] > 0)
+			count += format_s_right_helper_2(flags, temp, len);
+		else
+			count += format_s_right_helper_3(flags, temp, len); //precision ignored since greater than len
+		
+	}
+	else if (flags[7] >= len && flags[7] >= flags[5]) //precision ignored
+	{
+		write(1, temp, len);
+		count += len;
+		while (count < flags[5])
+			count += write_and_increment(' ');
+	}
+    return (count);
+}
+
 int		format_s(int flags[], va_list args) //first one you are working on
 {
 	int count;
 	char *temp;
-	char *len;
+	int	len;
 
 	temp = va_arg(args, char *);
 	len = strlen(temp);
-	if (!flags[5] && !flags[6])
+    if (!flags[5] && !flags[7] && flags[6] == 1)
+		return (0);
+	else if (!flags[5] && !flags[7])
 	{
 		write(1, temp, len);
 		return (len);
@@ -1040,15 +1083,9 @@ int		format_s(int flags[], va_list args) //first one you are working on
 	else
 	{
 		if (flags[1] == 1)
-		{
-		    //printf("format s left call\n");
 		    count = format_s_left(flags, temp, len); //non default behavior
-		}
 		else
-		{
-		    //printf("format s right call\n");
 			count = format_s_right(flags, temp, len); //default behavior
-		}
 	}
 	return (count);
 }
@@ -1762,10 +1799,11 @@ int     main(void)
     uintmax_t q = 0;
     uintmax_t r = 2342342838423;
     uintmax_t p = 1844674407370955161;
+    char *temp = "This is a test string.";
     printf("format string: %%-1.x\n");
-    int j = printf("%-.X| <- real", r);
+    int j = printf("%-25.18s| <- real", temp);
     printf("\n");
-    int k = ft_printf("%-.X| <- mine", r);
+    int k = ft_printf("%-25.18s| <- mine", temp);
     printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
     // printf("to the left is printf call\n");
     // int l = ft_printf("%020.p", j);
