@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 13:20:54 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 16:42:43 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 17:28:13 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,19 @@ int     format_o_right_helper_2(int flags[], uintmax_t argument, int len)
     {
         while (count < flags[5] - len)
             count += write_and_increment('0');
-        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
     }
     else
     {
         while (count < flags[5] - len)
             count += write_and_increment(' ');
-        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
     }
     return (count);
 }

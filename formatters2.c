@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 15:28:18 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 17:34:26 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ int		format_u(int flags[], va_list args)
 	count = 0;
 	argument = (uintmax_t)get_int_arg(flags, args); //this might give you issues
 	len = get_uint_len(argument);
-	if (flags[1] == 1) //left align
+	if (flags[7] == 0 && argument == 0)
+		
+	else if (flags[1] == 1) //left align
 		count = format_u_left(flags, argument, len);
 	else
 		count = format_u_right(flags, argument, len);

@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 14:53:50 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 16:43:23 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 17:23:50 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,10 @@ int     format_u_left_helper_2(int flags[], uintmax_t argument, int len)
     int count;
 
     count = 0;
-    count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    if (flags[7] == 0 && flags[6] == 1)
+        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
+    else
+        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
     while (count < flags[5])
         count += write_and_increment(' ');
     return (count);
