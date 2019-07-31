@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/30 15:23:53 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 17:34:25 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 18:00:51 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,14 @@ int     format_u_right(int flags[], uintmax_t argument, int len)
 
     count = 0;
     if (len >= flags[5] && len >= flags[7])
-        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_u_right_helper_1(flags, argument, len);
     else if (flags[5] >= len && flags[5] >= flags[7])

@@ -832,7 +832,10 @@ int     format_o_left_helper_2(int flags[], uintmax_t argument, int len)
     int count;
 
     count = 0;
-    count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+    if (flags[7] == 0 && flags[6] == 1)
+        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+    else
+        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
     while (count < flags[5])
         count += write_and_increment(' ');
     return (count);
@@ -859,7 +862,14 @@ int     format_o_left(int flags[], uintmax_t argument, int len)
 
     count = 0;
     if (len >= flags[5] && len >= flags[7])
-        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+    }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_o_left_helper_1(flags, argument, len);
     else if (flags[5] >= len && flags[5] >= flags[7])
@@ -875,7 +885,7 @@ int     format_o_left(int flags[], uintmax_t argument, int len)
 int     format_o_right_helper_1(int flags[], uintmax_t argument, int len)
 {
     //precision greatest
-
+    printf("forh1\n");
     int count;
 
     count = 0;
@@ -885,11 +895,11 @@ int     format_o_right_helper_1(int flags[], uintmax_t argument, int len)
     return (count);
 }
 
-
 int     format_o_right_helper_2(int flags[], uintmax_t argument, int len)
 {
     //minw greatest
     //len >= precision
+    printf("forh2\n");
     int count;
 
     count = 0;
@@ -897,13 +907,19 @@ int     format_o_right_helper_2(int flags[], uintmax_t argument, int len)
     {
         while (count < flags[5] - len)
             count += write_and_increment('0');
-        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
     }
     else
     {
         while (count < flags[5] - len)
             count += write_and_increment(' ');
-        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
     }
     return (count);
 }
@@ -912,6 +928,7 @@ int     format_o_right_helper_3(int flags[], uintmax_t argument, int len)
 {
     //minw greatest
     // precision > len
+    printf("forh3\n");
     int count;
 
     count = 0;
@@ -919,7 +936,7 @@ int     format_o_right_helper_3(int flags[], uintmax_t argument, int len)
         count += write_and_increment(' ');
     while (count < flags[5] - len)
         count += write_and_increment('0');
-    count += convert_to_octal(argument, 1);
+    count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
     return (count);
 }
 
@@ -929,7 +946,14 @@ int     format_o_right(int flags[], uintmax_t argument, int len)
 
     count = 0;
     if (len >= flags[5] && len >= flags[7])
-        count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_octal(argument, 1) : write_and_increment('0');
+    }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_o_right_helper_1(flags, argument, len);
     else if (flags[5] >= len && flags[5] >= flags[7])
@@ -1012,6 +1036,7 @@ int		format_s(int flags[], va_list args) //first one you are working on
 
 int     format_u_right_helper_1(int flags[], uintmax_t argument, int len)
 {
+    printf("furh1\n");
     int count;
 
     count = 0;
@@ -1023,6 +1048,7 @@ int     format_u_right_helper_1(int flags[], uintmax_t argument, int len)
 
 int     format_u_right_helper_2(int flags[], uintmax_t argument, int len)
 {
+    printf("furh2\n");
     int count;
 
     count = 0;
@@ -1030,19 +1056,26 @@ int     format_u_right_helper_2(int flags[], uintmax_t argument, int len)
     {
         while (count < flags[5] - len)
             count += write_and_increment('0');
-        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+        if (flags[7] > 0)
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+        else
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
     }
     else
     {
         while (count < flags[5] - len)
             count += write_and_increment(' ');
-        count += print_uint_max(argument, 1);
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
     }
     return (count);
 }
 
 int     format_u_right_helper_3(int flags[], uintmax_t argument, int len)
 {
+    printf("furh3\n");
     int count;
 
     count = 0;
@@ -1060,7 +1093,14 @@ int     format_u_right(int flags[], uintmax_t argument, int len)
 
     count = 0;
     if (len >= flags[5] && len >= flags[7])
-        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_u_right_helper_1(flags, argument, len);
     else if (flags[5] >= len && flags[5] >= flags[7])
@@ -1075,6 +1115,7 @@ int     format_u_right(int flags[], uintmax_t argument, int len)
 
 int     format_u_left_helper_1(int flags[], uintmax_t argument, int len)
 {
+    printf("fulh1\n");
     int count;
 
     count = 0;
@@ -1086,10 +1127,14 @@ int     format_u_left_helper_1(int flags[], uintmax_t argument, int len)
 
 int     format_u_left_helper_2(int flags[], uintmax_t argument, int len)
 {
+    printf("fulh2\n");
     int count;
 
     count = 0;
-    count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    if (flags[7] == 0 && flags[6] == 1)
+        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
+    else
+        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
     while (count < flags[5])
         count += write_and_increment(' ');
     return (count);
@@ -1114,7 +1159,14 @@ int     format_u_left(int flags[], uintmax_t argument, int len)
 
     count = 0;
     if (len >= flags[5] && len >= flags[7])
-        count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    {
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? print_uint_max(argument, 1) : write_and_increment('0');
+    }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_u_left_helper_1(flags, argument, len);
     else if (flags[5] >= len && flags[5] >= flags[7])
@@ -1368,9 +1420,10 @@ int     main(void)
     int i = 2000;
     uintmax_t q = 0;
     uintmax_t p = 1844674407370955161;
-    int j = printf("%-2.5llu| <- real", p);
+    printf("format string: %%1.u\n");
+    int j = printf("%-1.u| <- real", q);
     printf("\n");
-    int k = ft_printf("%-2.5llu| <- mine", p);
+    int k = ft_printf("%-1.u| <- mine", q);
     printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
     // printf("to the left is printf call\n");
     // int l = ft_printf("%020.p", j);
