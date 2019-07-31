@@ -19,6 +19,25 @@ void    ft_putchar(char c)
     write(1, &c, 1);
 }
 
+int    convert_to_hex_upper(uintmax_t n, int flag)
+{
+    uintmax_t temp;
+    char c;
+    int count;
+    if (!n)
+        return (0);
+    temp = n % 16;
+    if (temp > 10)
+        c = temp + 55;
+    else
+        c = temp + 48;
+    count = convert_to_hex_upper(n/16, flag);
+    if (flag == 1)
+        write(1, &c, 1);
+    count++;
+    return (count);
+}
+
 int     get_uint_len(uintmax_t n)
 {
     int count;
@@ -1356,10 +1375,177 @@ int		format_x(int flags[], va_list args)
 	return (count);
 }
 
+int     format_x_upper_right_helper_1(int flags[], uintmax_t argument, int len)
+{
+    printf("fxurh1\n");
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    return (count);
+}
+
+int     format_x_upper_right_helper_2(int flags[], uintmax_t argument, int len)
+{
+    printf("fxurh2\n");
+    int count;
+
+    count = 0;
+    if (flags[6] == 0 && flags[3] == 1)
+    {
+        while (count < flags[5] - len)
+            count += write_and_increment('0');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    }
+    else
+    {
+        while (count < flags[5] - len)
+            count += write_and_increment(' ');
+        if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    }
+    return (count);    
+}
+
+int     format_x_upper_right_helper_3(int flags[], uintmax_t argument, int len)
+{
+    printf("fxurh3\n");
+    //minw greatest
+    // precision > len
+    int count;
+
+    count = 0;
+    while (count < flags[5] - flags[7])
+        count += write_and_increment(' ');
+    while (count < flags[5] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    return (count);    
+}
+
+int     format_x_upper_right(int flags[], uintmax_t argument, int len)
+{
+    printf("fxur\n");
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        printf("in here X\n");
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    }
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+        count += format_x_upper_right_helper_1(flags, argument, len);
+    else if (flags[5] >= len && flags[5] >= flags[7])
+    {
+        if (len >= flags[7])
+            count += format_x_upper_right_helper_2(flags, argument, len);
+        else
+            count += format_x_upper_right_helper_3(flags, argument, len);
+    }
+    return (count);    
+}
+
+int     format_x_upper_left_helper_1(int flags[], uintmax_t argument, int len)
+{
+    printf("fxulh1\n");
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    return (count);
+}
+
+int     format_x_upper_left_helper_2(int flags[], uintmax_t argument, int len)
+{
+    printf("fxulh2\n");
+    //minw >= both
+    // len >= precision
+    int count;
+
+    count = 0;
+    if (flags[7] == 0 && flags[6] == 1)
+        count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment(' ');
+    else
+        count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    while (count < flags[5])
+        count += write_and_increment(' ');
+    return (count);
+}
+
+int     format_x_upper_left_helper_3(int flags[], uintmax_t argument, int len)
+{
+    printf("fxulh3\n");
+     //minw >= both
+    //precision > len
+    int count;
+
+    count = 0;
+    while (count < flags[7] - len)
+        count += write_and_increment('0');
+    count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    while (count < flags[5])
+        count += write_and_increment(' ');   
+    return (count);
+}
+
+
+int     format_x_upper_left(int flags[], uintmax_t argument, int len)
+{
+    printf("fxul\n");
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        printf("in fxul first\n");
+        if (flags[5] == 0 && flags[6] == 1 && flags[7] == 0 && argument == 0)
+            count += 0;
+        else if (flags[7] == 0 && flags[6] == 1)
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment(' ');
+        else
+            count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
+    }
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+        count += format_x_upper_left_helper_1(flags, argument, len);
+    else if (flags[5] >= len && flags[5] >= flags[7])
+    {
+        if (len >= flags[7])
+            count += format_x_upper_left_helper_2(flags, argument, len);
+        else
+            count += format_x_upper_left_helper_3(flags, argument, len);
+    }
+    return (count);
+}
+
 int		format_x_upper(int flags[], va_list args)
 {
-	printf("format string X(upper)");
-	return (0);
+	int count;
+	uintmax_t argument;
+	int len;
+	
+	count = 0;
+	argument = (uintmax_t)get_int_arg(flags, args);
+	len = convert_to_hex_upper(argument, 0);
+	if (flags[1] == 1)
+		count = format_x_upper_left(flags, argument, len);
+	else
+		count = format_x_upper_right(flags, argument, len);
+	return (count);
 }
 
 void init_dispatch_table(conversion *f[])
@@ -1577,9 +1763,9 @@ int     main(void)
     uintmax_t r = 2342342838423;
     uintmax_t p = 1844674407370955161;
     printf("format string: %%-1.x\n");
-    int j = printf("%-.x| <- real", r);
+    int j = printf("%-.X| <- real", r);
     printf("\n");
-    int k = ft_printf("%-.x| <- mine", r);
+    int k = ft_printf("%-.X| <- mine", r);
     printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
     // printf("to the left is printf call\n");
     // int l = ft_printf("%020.p", j);

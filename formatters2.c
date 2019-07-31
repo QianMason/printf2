@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/30 18:58:18 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 19:17:27 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,36 +102,16 @@ int		format_x(int flags[], va_list args)
 
 int		format_x_upper(int flags[], va_list args)
 {
-	printf("format string X(upper): %s\n", print->format);
-	return (0);
+	int count;
+	uintmax_t argument;
+	int len;
+	
+	count = 0;
+	argument = (uintmax_t)get_int_arg(flags, args);
+	len = convert_to_hex_upper(argument, 0);
+	if (flags[1] == 1)
+		count = format_x_upper_left(flags, argument, len);
+	else
+		count = format_x_upper_right(flags, argument, len);
+	return (count);
 }
-
-// void format_o(char *format)
-// {
-// 	printf("format string o: %s\n", format);
-// 	return ;
-// }
-
-// void format_p(char *format)
-// {
-// 	printf("format string p: %s\n", format);
-// 	return ;
-// }
-
-// void format_u(char *format)
-// {
-// 	printf("format string u: %s\n", format);
-// 	return ;
-// }
-
-// void format_x(char *format)
-// {
-// 	printf("format string x: %s\n", format);
-// 	return ;
-// }
-
-// void format_x_upper(char *format)
-// {
-// 	printf("format string X(upper): %s\n", format);
-// 	return ;
-// }

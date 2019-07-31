@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 15:04:07 by mqian            ###   ########.fr       */
+/*   Updated: 2019/07/30 19:34:25 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,26 @@ int    convert_to_hex(uintmax_t n, int flag)
     else
         c = temp + 87;
     count = convert_to_hex(n/16, flag);
+    if (flag == 1)
+        write(1, &c, 1);
+    count++;
+    return (count);
+}
+
+int    convert_to_hex_upper(uintmax_t n, int flag)
+{
+    uintmax_t temp;
+    char c;
+    int count;
+
+    if (!n)
+        return (0);
+    temp = n % 16;
+    if (temp < 10)
+        c = temp + 48;
+    else
+        c = temp + 55;
+    count = convert_to_hex_upper(n/16, flag);
     if (flag == 1)
         write(1, &c, 1);
     count++;
