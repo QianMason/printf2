@@ -160,340 +160,6 @@ int    convert_to_hex(uintmax_t n, int flag)
     count++;
     return (count);
 }
-int		d_right_helper_3(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("drh3\n");
-	while (count < flags[5] - flags[7] - 1)
-		count += write_and_increment(' ');
-	if (argument == 0)
-		count += write_and_increment(' ');
-	else if (argument < 0)
-	{
-		count += write_and_increment('-');
-		argument *= -1;
-	}
-	else
-		count += write_and_increment('+');
-	while (count < flags[5] - arg_len)
-		count += write_and_increment('0');
-	ft_putnbr(argument);
-	count += arg_len;
-	return (count);
-}
-
-int		d_right_helper_4(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("drh4\n");
-	if (argument == 0)
-	{
-		ft_putnbr(argument);
-		count++;
-	}
-	else if (argument < 0)
-	{
-		count += write_and_increment('-');
-		argument *= -1;
-	}
-	else
-		count += write_and_increment('+');
-	ft_putnbr(argument);
-	count += arg_len;
-	return (count);
-}
-
-int		d_right_helper_5(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("drh5\n");
-    if (flags[6] == 0 && flags[3] == 1) //minw > arg_len > precision
-    {
-        if (argument < 0)
-        {
-            count += write_and_increment('-');
-            argument *= -1;
-        }
-        while (count < flags[5] - arg_len)
-            count += write_and_increment('0');
-    }
-    else if (flags[6] == 1 || flags[3] == 0)
-    {
-        while (count < flags[5] - arg_len - 1)
-            count += write_and_increment(' ');
-        if (argument < 0)
-        {
-            count += write_and_increment('-');
-            argument *= -1;
-        }
-        else
-            count += write_and_increment(' ');
-    }
-    ft_putnbr(argument);
-    count += arg_len;
-	return (count);
-}
-
-int     d_right_helper_6(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("drh6\n");
-    if (argument > 0)
-        write(1, "+", 1);
-    else if (argument < 0)
-    {
-        write(1, "-", 1);
-        argument *= -1;
-    }
-    if (flags[7] > arg_len)
-    {
-        while (count < flags[7] - arg_len)
-            count += write_and_increment('0');
-    }
-    ft_putnbr(argument);
-    count += arg_len;
-    if (argument != 0)
-        count++;
-    return (count);
-}
-
-int     d_right_helper_7(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("in d_right_helper_7\n");
-    while (count < flags[5] - flags[7] - 1)
-        count += write_and_increment(' ');
-    if (argument < 0)
-    {
-        count += write_and_increment('-');
-        argument *= -1;
-    }
-    while (count < flags[5] - arg_len)
-        count += write_and_increment('0');
-    ft_putnbr(argument);
-    count += arg_len;
-    return (count);
-}
-
-int     d_right_helper_8(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("in d_right_helper_8\n");
-    if (arg_len > flags[5])
-    {
-        ft_putnbr(argument);
-        count += arg_len;
-        if (argument < 0)
-            count++;
-    }
-    else
-    {
-        printf("went here instead\n");
-        //printf("value of flags[3] == %d\n", flags[3]);
-        // this portion of code below is identical to d_right_helper_5, so maybe just use that?
-        if (flags[6] == 0 && flags[3] == 1) //minw > arg_len > precision
-        {
-            if (argument < 0)
-            {
-                count += write_and_increment('-');
-                argument *= -1;
-            }
-            while (count < flags[5] - arg_len)
-                count += write_and_increment('0');
-        }
-        else if (flags[6] == 1 || flags[3] == 0)
-        {
-            while (count < flags[5] - arg_len - 1)
-                count += write_and_increment(' ');
-            if (argument < 0)
-            {
-                count += write_and_increment('-');
-                argument *= -1;
-            }
-            else
-                count += write_and_increment(' ');
-        }
-        ft_putnbr(argument);
-        count += arg_len;
-    }
-    return (count);
-}
-
-int     d_right_helper_9(int flags[], int arg_len, intmax_t argument, int count)
-{
-    //printf("in d_right_helper_9\n");
-    if (argument < 0)
-        write(1, "-", 1);
-    if (flags[7] > arg_len) //precision greater than arg_len, need to pad with 0s
-    {
-        while (count < flags[7] - arg_len)
-            count += write_and_increment('0');
-        if (argument < 0)
-        {
-            count++;
-            argument *= -1;
-        }
-        ft_putnbr(argument);
-        count += arg_len;
-    }
-    else //arg_len >= flags[7], arg_len >precision >= flags[5], so print prepension and then just print the number since its right justified.
-    {
-        if (argument < 0)
-        {
-            count++;
-            argument *= -1;
-        }
-        ft_putnbr(argument);
-        count += arg_len;
-    }
-    return (count);
-}
-
-
-int     d_right_helper_1(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("in d_right_helper_1\n");
-    if (flags[5] > flags[7]) //minw greater than precision
-    {
-        if (flags[7] > arg_len) //precision is greater than arg_len
-            count += d_right_helper_3(flags, arg_len, argument, count);
-        else //flags[7] <= arg_len, precision is less than or equal to arg_len so ignore
-        {
-            if (arg_len > flags[5])
-                count += d_right_helper_4(flags, arg_len, argument, count);
-            else //arg_len <= minw (flags[5]) precision ignored
-                count += d_right_helper_5(flags, arg_len, argument, count);
-        }
-    }
-    else //minw flags[5] <= precision flags[7]
-        count += d_right_helper_6(flags, arg_len, argument, count);
-    return (count);
-}
-
-int     d_right_helper_2(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("in d_right_helper_2 no prepended +/-\n");
-    if (flags[5] > flags[7]) //minw greater than precision
-    {
-        if (flags[7] > arg_len)
-            count += d_right_helper_7(flags, arg_len, argument, count);
-        else // arg_len >= precision (flags[7])
-            count += d_right_helper_8(flags, arg_len, argument, count);
-    }
-    else // minw <= than precision (flags[5] <= flags[7]) essentially left justified
-        count += d_right_helper_9(flags, arg_len, argument, count);
-    return (count);
-}
-
-int		format_d_right(int flags[], intmax_t argument)
-{
-    printf("in format_d_right\n");
-	int count;
-	int arg_len;
-
-	count = 0;
-	arg_len = get_int_len(argument);
-	//printf("argument: %d, argument length: %d\n", argument, arg_len);
-	if (flags[0] == 1) // prepend a + or - based on argument sign
-		count += d_right_helper_1(flags, arg_len, argument, count);
-	else //no +/- prepensions
-		count += d_right_helper_2(flags, arg_len, argument, count);
-	return (count);
-}
-
-int		format_d_left_helper_4(int flags[], int arg_len, intmax_t argument, intmax_t orig)
-{
-	int count;
-
-	count = 0;
-	if (flags[7] > arg_len)
-	{
-		while (count < flags[7] - arg_len)
-			count += write_and_increment('0');
-		ft_putnbr(argument);
-		count += (orig != 0) ? arg_len + 1: arg_len;
-		while (count < flags[5])
-			count += write_and_increment(' ');
-	}
-	else //precision is less than argument length or is zero
-	{
-		ft_putnbr(argument);
-		count += (orig != 0) ? arg_len + 1: arg_len;
-		while (count < flags[5])
-			count += write_and_increment(' ');
-	}
-	return (count);
-}
-
-int		format_d_left_helper_1(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("in format_d_left_helper_1\n");
-    intmax_t orig;
-
-    orig = argument;
-	if (argument < 0)
-	{
-		write(1, "-", 1);
-		argument *= -1; //convert to positive
-	}
-	else if (argument > 0)
-		write(1, "+", 1);
-	count += format_d_left_helper_4(flags, arg_len, argument, orig);
-	return (count);
-}
-
-int		format_d_left_helper_3(int flags[], int arg_len, intmax_t argument, intmax_t orig)
-{
-    //printf("int format_d_left_helper_3\n");
-	int count;
-
-	count = 0;
-	if (flags[7] > arg_len)
-	{
-	    //printf("in first part\n");
-		while (count < flags[7] - arg_len)
-			count += write_and_increment('0');
-		ft_putnbr(argument);
-		count += (orig < 0) ? arg_len + 1: arg_len; //need to update count here to handle tis condition
-		while (count < flags[5])
-			count += write_and_increment(' ');
-	}
-	else //precision is less than argument length or is zero/not present
-	{
-	    //printf("in second part\n");
-		ft_putnbr(argument);
-		count += (orig < 0) ? arg_len + 1: arg_len;
-		while (count < flags[5] && (flags[3] == 0 || flags[6] == 1)) //precision is ignored so print ' 's if the 0 flag is not present
-			count += write_and_increment(' ');
-		while (count < flags[5] && flags[3] == 1 && flags[6] == 0) //precision is ignored so print '0's if the 0 flag is present
-			count += write_and_increment('0');
-	}
-	return (count);
-}
-
-int		format_d_left_helper_2(int flags[], int arg_len, intmax_t argument, int count)
-{
-    printf("in format_d_left_helper_2\n");
-	intmax_t orig;
-
-	orig = argument;
-	if (argument < 0)
-	{
-		write(1, "-", 1);
-		argument *= -1; //convert to positive
-	}
-	count += format_d_left_helper_3(flags, arg_len, argument, orig);
-	return (count);
-}
-
-int		format_d_left(int flags[], intmax_t argument) //left align
-{
-    //printf("in format_d_left\n");
-	int count;
-	int arg_len;
-
-	count = 0;
-	arg_len = get_int_len(argument);
-	if (flags[0] == 1) // '+' seen which means prepend a + or - based on if the number is positive or negative
-		count += format_d_left_helper_1(flags, arg_len, argument, count);
-	else //flags[0] == 0 so no prepended + or - so 0 flag is not overrided
-		count += format_d_left_helper_2(flags, arg_len, argument, count);
-	return (count);
-}
 
 int     format_p_left_helper_1(int flags[], uintmax_t dec, int len)
 {
@@ -699,18 +365,198 @@ int		format_c(int flags[], va_list args)
 	return (count);
 }
 
+int    format_d_sign(int flags[], intmax_t *arg)
+{
+    printf("fdsign\n");
+    int count;
+
+    count = 0;
+    
+    if (*arg < 0) //negative the value is always written
+    {
+        count += write_and_increment('-');
+        *arg *= -1;
+    }
+    else if (flags[0] == 1 && *arg > 0) //next in line is if there is a + flag, which means show the '+' if positive
+        count += write_and_increment('+');
+    else if (flags[4] == 1) //final check is if ' ' flag is present, then write in a space initially
+        count += write_and_increment(' ');
+    return (count);    
+}
+
+int    format_d_left_helper_1(int flags[], intmax_t argument, int len)
+{
+    int count;
+
+    count = format_d_sign(flags, &argument);
+    if (count == 1) //which means we wrote something
+    {
+        while (count < flags[7] - len + 1)
+            count += write_and_increment('0');
+        count += print_uint_max(argument, 1);
+    }
+    else
+    {
+        while (count < flags[7] - len)
+            count += write_and_increment('0');
+        count += print_uint_max(argument, 1);
+    }
+    return (count);
+}
+
+int     format_d_left_helper_2(int flags[], intmax_t argument, int len)
+{
+    //len >= precision so precision is not considered
+    //minw greatest
+    int count;
+
+    count = format_d_sign(flags, &argument);
+    count += print_uint_max(argument, 1);
+    while (count < flags[5])
+        count += write_and_increment(' ');
+    return (count);
+}
+
+int     format_d_left_helper_3(int flags[], intmax_t argument, int len)
+{
+    //minw >= precision && minw >= len
+    //precision > len
+    int count;
+
+    count = format_d_sign(flags, &argument);
+    if (count == 1) //which means we wrote something
+    {
+        while (count < flags[7] - len + 1)
+            count += write_and_increment('0');
+        count += print_uint_max(argument, 1);
+    }
+    else
+    {
+        while (count < flags[7] - len)
+            count += write_and_increment('0');
+        count += print_uint_max(argument, 1);
+    }
+    while (count < flags[5])
+        count += write_and_increment(' ');
+    return (count);
+}
+
+int     format_d_left(int flags[], intmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        count = format_d_sign(flags, &argument); //writes the sign if its there
+        count += print_uint_max(argument, 1);
+    }
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+        count += format_d_left_helper_1(flags, argument, len);
+    else if (flags[5] >= flags[7] && flags[5] >= len)
+    {
+        if (len >= flags[7])
+            count += format_d_left_helper_2(flags, argument, len);
+        else
+            count += format_d_left_helper_3(flags, argument, len);
+    }
+    return (count);
+}
+
+int     format_d_right_helper_1(int flags[], intmax_t argument, int len)
+{
+    printf("fdrh1\n");
+    //precision greatest
+    //minw ignored
+    //for format d, if precision is the greatest, then really its just the same case
+    //for both left and right, so simply call the one you wrote already
+    return (format_d_left_helper_1(flags, argument, len));
+}
+
+int     format_d_right_helper_2(int flags[], intmax_t argument, int len)
+{
+    printf("fdrh2\n");
+    //minw greatest
+    //len >= precision so precision is ignored
+    //must consider flags[3] since it could be zero padded
+    int count;
+
+    count = 0;
+    if (flags[3] == 1 && flags[6] == 0 && flags[7] == 0)
+    {
+        count += format_d_sign(flags, &argument);
+        while (count < flags[5] - len)
+            count += write_and_increment('0');
+        count += print_uint_max(argument, 1);
+    }
+    else
+    {
+        while (count < flags[5] - len - 1)
+            count += write_and_increment(' ');
+        if (format_d_sign(flags, &argument) == 1)
+            count += 1;
+        else
+            count += write_and_increment(' ');
+        count += print_uint_max(argument, 1);
+    }
+    return (count);
+}
+
+int     format_d_right_helper_3(int flags[], intmax_t argument, int len)
+{
+    printf("fdrh3\n");
+    //minw greatest
+    //precision > len
+    int count;
+
+    count = 0;
+    while (count < flags[5] - flags[7] - 1)
+        count += write_and_increment(' ');
+    if (format_d_sign(flags, &argument) == 1)
+        count += 1;
+    else
+        count += write_and_increment(' ');
+    while (count < flags[5] - len)
+        count += write_and_increment('0');
+    count += print_uint_max(argument, 1);
+    return (count);
+}
+
+int     format_d_right(int flags[], intmax_t argument, int len)
+{
+    int count;
+
+    count = 0;
+    if (len >= flags[5] && len >= flags[7])
+    {
+        count = format_d_sign(flags, &argument); //writes the sign if its there
+        count += print_uint_max(argument, 1);
+    }    
+    else if (flags[7] >= flags[5] && flags[7] >= len)
+        count += format_d_right_helper_1(flags, argument, len); //maybe just switch to left one to save a function
+    else if (flags[5] >= flags[7] && flags[5] >= len)
+    {
+        if (len >= flags[7])
+            count += format_d_right_helper_2(flags, argument, len);
+        else
+            count += format_d_right_helper_3(flags, argument, len);
+    }
+    return (count);   
+}
+
 int		format_d(int flags[], va_list args)
 {
-    //printf("in format_d\n");
 	int count;
 	intmax_t argument;
+	int len;
 
 	count = 0;
 	argument = get_int_arg(flags, args);
+	len = get_int_len(argument);
 	if (flags[1] == 1) //left align
-		count = format_d_left(flags, argument);
+		count = format_d_left(flags, argument, len);
 	else
-		count = format_d_right(flags, argument);
+		count = format_d_right(flags, argument, len);
 	return (count);
 }
 
@@ -1797,13 +1643,14 @@ int     main(void)
 {
     int i = 2000;
     uintmax_t q = 0;
-    uintmax_t r = 2342342838423;
+    uintmax_t r = 2342342838;
+    intmax_t z = -2343453859;
     uintmax_t p = 1844674407370955161;
     char *temp = "This is a test string.";
     printf("format string: %%-1.x\n");
-    int j = printf("%-25.18s| <- real", temp);
+    int j = printf("%20.19ld| <- real", z);
     printf("\n");
-    int k = ft_printf("%-25.18s| <- mine", temp);
+    int k = ft_printf("%20.19ld| <- mine", z);
     printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
     // printf("to the left is printf call\n");
     // int l = ft_printf("%020.p", j);

@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/07/31 17:39:01 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/01 16:00:46 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,29 +25,6 @@ int     format_c(int flags[], va_list args)
     return (count);
 }
 
-int     format_d_left(int flags[], intmax_t argument, int len)
-{
-    int count;
-
-    count = 0;
-    if (len >= flags[5] && len >= flags[7])
-    {
-        count += format_d_left_helper_1(flags, argument, len);
-    }
-    else if (flags[7] >= flags[5] && flags[7] >= len)
-    {
-        count += format_d_left_helper_2(flags, argument, len);
-    }
-    else if (flags[5] >= flags[7] && flags[5] >= len)
-    {
-        if (len >= flags[7])
-            count += format_d_left_helper_3(flags, argument, len);
-        else
-            count += format_d_left_helper_4(flags, argument, len);
-    }
-    return (count);
-}
-
 int		format_d(int flags[], va_list args)
 {
 	int count;
@@ -55,8 +32,8 @@ int		format_d(int flags[], va_list args)
 	int len;
 
 	count = 0;
-	len = get_int_len(argument);
 	argument = get_int_arg(flags, args);
+	len = get_int_len(argument);
 	if (flags[1] == 1) //left align
 		count = format_d_left(flags, argument, len);
 	else

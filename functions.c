@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/31 13:19:45 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/01 14:55:10 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ int     write_and_increment(wint_t c)
 intmax_t    get_int_arg(int flags[], va_list args)
 {
     intmax_t argument;
-    //printf("value of flags[8] == %d\n", flags[8]);
     
     if (flags[8] == 1)
         argument = va_arg(args, signed char); //need to promote?
@@ -135,7 +134,6 @@ intmax_t    get_int_arg(int flags[], va_list args)
         argument = va_arg(args, long long);
     else
         argument = va_arg(args, int);
-    printf("end of get_int_arg func\n");
     return (argument);
 }
 
