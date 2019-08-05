@@ -3,6 +3,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdint.h>
+# include <float.h>
 
 typedef int conversion(int flags[], va_list args);
 
@@ -17,6 +18,30 @@ typedef struct s_print_struct
 void    ft_putchar(char c)
 {
     write(1, &c, 1);
+}
+
+int     get_float_len(long double f)
+{
+    int len;
+    intmax_t hold;
+    printf("f in func: %Lf\n", f);
+    hold = (intmax_t)f; //cast to int to get that portion of the number;
+
+    printf("hold: %lld\n", hold);
+    len = 0;
+    if (f < 0) //for negative value
+        len += 1;
+    f = (f < 0) ? -f : f;
+    printf("f: %Lf\n", f);
+	while (hold > 0 && len++ >= 0)
+		hold /= 10;
+	while (f - (long)f != 0 && len++ >= 0)
+	{
+		f *= 10;
+		printf("len now: %d, f now: %Lf\n", len, f);
+	}
+	printf("len + 1: %d\n", len + 1);
+    return (len + 1); //for decimal
 }
 
 int    convert_to_hex_upper(uintmax_t n, int flag)
@@ -269,7 +294,7 @@ int		format_p_right_helper_2(int flags[], uintmax_t dec, int len)
 			count += write_and_increment(' ');
 		write(1, "0x", 2);
 		count += 2;
-		count += convert_to_hex(dec, 1);		
+		count += convert_to_hex(dec, 1);
 	}
 	return (count);
 }
@@ -371,7 +396,7 @@ int    format_d_sign(int flags[], intmax_t *arg)
     int count;
 
     count = 0;
-    
+
     if (*arg < 0) //negative the value is always written
     {
         count += write_and_increment('-');
@@ -381,7 +406,7 @@ int    format_d_sign(int flags[], intmax_t *arg)
         count += write_and_increment('+');
     else if (flags[4] == 1) //final check is if ' ' flag is present, then write in a space initially
         count += write_and_increment(' ');
-    return (count);    
+    return (count);
 }
 
 int    format_d_left_helper_1(int flags[], intmax_t argument, int len)
@@ -531,7 +556,7 @@ int     format_d_right(int flags[], intmax_t argument, int len)
     {
         count = format_d_sign(flags, &argument); //writes the sign if its there
         count += print_uint_max(argument, 1);
-    }    
+    }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_d_right_helper_1(flags, argument, len); //maybe just switch to left one to save a function
     else if (flags[5] >= flags[7] && flags[5] >= len)
@@ -541,7 +566,7 @@ int     format_d_right(int flags[], intmax_t argument, int len)
         else
             count += format_d_right_helper_3(flags, argument, len);
     }
-    return (count);   
+    return (count);
 }
 
 int		format_d(int flags[], va_list args)
@@ -823,7 +848,7 @@ int		format_s_left(int flags[], char *temp, int len)
 			count += format_s_left_helper_2(flags, temp, len);
 		else
 			count += format_s_left_helper_3(flags, temp, len); //precision ignored since greater than len
-		
+
 	}
 	else if (flags[7] >= len && flags[7] >= flags[5]) //precision ignored
 	{
@@ -860,7 +885,7 @@ int     format_s_right_helper_1(int flags[], char *temp, int len)
 int     format_s_right_helper_2(int flags[], char *temp, int len)
 {
     //case where length is greater than precision and minw greater than all
-    //want to print out spaces until minw - precision then write precision worth of char 
+    //want to print out spaces until minw - precision then write precision worth of char
     //from temp
     int count;
 
@@ -899,7 +924,7 @@ int     format_s_right(int flags[], char *temp, int len)
 			count += format_s_right_helper_2(flags, temp, len);
 		else
 			count += format_s_right_helper_3(flags, temp, len); //precision ignored since greater than len
-		
+
 	}
 	else if (flags[7] >= len && flags[7] >= flags[5]) //precision ignored
 	{
@@ -1161,7 +1186,7 @@ int     format_x_left_helper_3(int flags[], uintmax_t argument, int len)
         count += write_and_increment('0');
     count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
     while (count < flags[5])
-        count += write_and_increment(' ');   
+        count += write_and_increment(' ');
 }
 
 int     format_x_right_helper_1(int flags[], uintmax_t argument, int len)
@@ -1198,7 +1223,7 @@ int     format_x_right_helper_2(int flags[], uintmax_t argument, int len)
         else
             count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
     }
-    return (count);    
+    return (count);
 }
 
 int     format_x_right_helper_3(int flags[], uintmax_t argument, int len)
@@ -1213,7 +1238,7 @@ int     format_x_right_helper_3(int flags[], uintmax_t argument, int len)
     while (count < flags[5] - len)
         count += write_and_increment('0');
     count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
-    return (count);    
+    return (count);
 }
 
 int     format_x_right(int flags[], uintmax_t argument, int len)
@@ -1239,7 +1264,7 @@ int     format_x_right(int flags[], uintmax_t argument, int len)
         else
             count += format_x_right_helper_3(flags, argument, len);
     }
-    return (count);    
+    return (count);
 }
 
 int		format_x(int flags[], va_list args)
@@ -1247,7 +1272,7 @@ int		format_x(int flags[], va_list args)
 	int count;
 	uintmax_t argument;
 	int len;
-	
+
 	count = 0;
 	argument = (uintmax_t)get_int_arg(flags, args);
 	len = convert_to_hex(argument, 0);
@@ -1294,7 +1319,7 @@ int     format_x_upper_right_helper_2(int flags[], uintmax_t argument, int len)
         else
             count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
     }
-    return (count);    
+    return (count);
 }
 
 int     format_x_upper_right_helper_3(int flags[], uintmax_t argument, int len)
@@ -1310,7 +1335,7 @@ int     format_x_upper_right_helper_3(int flags[], uintmax_t argument, int len)
     while (count < flags[5] - len)
         count += write_and_increment('0');
     count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
-    return (count);    
+    return (count);
 }
 
 int     format_x_upper_right(int flags[], uintmax_t argument, int len)
@@ -1338,7 +1363,7 @@ int     format_x_upper_right(int flags[], uintmax_t argument, int len)
         else
             count += format_x_upper_right_helper_3(flags, argument, len);
     }
-    return (count);    
+    return (count);
 }
 
 int     format_x_upper_left_helper_1(int flags[], uintmax_t argument, int len)
@@ -1382,7 +1407,7 @@ int     format_x_upper_left_helper_3(int flags[], uintmax_t argument, int len)
         count += write_and_increment('0');
     count += (argument > 0) ? convert_to_hex_upper(argument, 1) : write_and_increment('0');
     while (count < flags[5])
-        count += write_and_increment(' ');   
+        count += write_and_increment(' ');
     return (count);
 }
 
@@ -1420,7 +1445,7 @@ int		format_x_upper(int flags[], va_list args)
 	int count;
 	uintmax_t argument;
 	int len;
-	
+
 	count = 0;
 	argument = (uintmax_t)get_int_arg(flags, args);
 	len = convert_to_hex_upper(argument, 0);
@@ -1641,17 +1666,19 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    int i = 2000;
-    uintmax_t q = 0;
-    uintmax_t r = 2342342838;
-    intmax_t z = -2343453859;
-    uintmax_t p = 1844674407370955161;
+    float test = -43.566;
+    long double test2;
+
+    test2 = (long double)test;
+    printf("test2: %.20Lf\n", test2);
+    int len = get_float_len(test2);
+    printf("len: %d\n", len);
     char *temp = "This is a test string.";
-    printf("format string: %%-1.x\n");
-    int j = printf("%20.19ld| <- real", z);
+    //printf("format string: %%-1.x\n");
+    int j = printf("%18.12f", test);
     printf("\n");
-    int k = ft_printf("%20.19ld| <- mine", z);
-    printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
+    //int k = ft_printf("%20.19ld| <- mine", z);
+    //printf("\nprintf j = %d, ft_printf k = %d\n", j, k);
     // printf("to the left is printf call\n");
     // int l = ft_printf("%020.p", j);
     // printf("\nValue of printf call: %d\n", k);
