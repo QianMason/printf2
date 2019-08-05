@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/01 16:00:46 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/02 16:52:26 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int     format_c(int flags[], va_list args)
 {
     int count;
     wint_t c;
-    
+
     c = va_arg(args, wint_t);
     if (flags[1] == 1)
         count = format_c_left(flags, c);
@@ -43,14 +43,25 @@ int		format_d(int flags[], va_list args)
 
 int		format_f(int flags[], va_list args)
 {
-	printf("format string f: %s\n", print->format);
+	int count;
+	long double argument;
+	int arg_len;
+	char *string_float;
+
+	count = 0;
+	argument = get_float_arg(flags, args);
+	arg_len = get_float_len(argument);
+	string_float = float_to_string(argument);
+	if (flags[1] == 1)
+		count = format_f_left(flags, string_float);
+	else
+		count = format_f_right(flags, string_float);
 	return (0);
 }
 
 int		format_i(int flags[], va_list args)
 {
-	printf("format string i: %s\n", print->format);
-	return (0);
+	return(format_d(flags, args));
 }
 
 int		format_o(int flags[], va_list args)

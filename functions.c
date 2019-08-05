@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/01 14:55:10 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/05 11:22:30 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int     write_and_increment(wint_t c)
 intmax_t    get_int_arg(int flags[], va_list args)
 {
     intmax_t argument;
-    
+
     if (flags[8] == 1)
         argument = va_arg(args, signed char); //need to promote?
     else if (flags[8] == 2)
@@ -154,3 +154,24 @@ int     not_valid_format(char c)
 //         c = va_arg(args, unsigned char);
 //     return (c);
 // }
+
+int     get_float_len(long double f)
+{
+    int len;
+    intmax_t hold;
+
+    hold = (intmax_t)f; //cast to int to get that portion of the number;
+    if (f < 0) //for negative value
+        len += 1;
+    f = (f < 0) ? -f : f;
+	while (hold > 0 && len++ >= 0)
+		hold /= 10;
+	while (f - (long)f != 0 && len++ >= 0)
+		f *= 10;
+    return (len);
+}
+
+char *float_to_string(long double argument)
+{
+
+}
