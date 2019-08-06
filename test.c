@@ -15,9 +15,97 @@ typedef struct s_print_struct
 	conversion *formatters[10];
 }				t_print_struct;
 
+long	get_prec_num_f(long double d, int prec)
+{
+	int		neg;
+	int		i;
+
+	i = -1;
+	neg = (d < 0 ? -1 : 1);
+	d *= neg;
+	while (++i < prec)
+		d *= 10;
+	d += 0.5;
+	d *= neg;
+	return ((long)d);
+}
+
 void    ft_putchar(char c)
 {
     write(1, &c, 1);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t			i;
+	unsigned char	*c;
+
+	i = 0;
+	c = s;
+	if (n == 0)
+	{
+		return ;
+	}
+	while (i < n)
+	{
+		*c = '\0';
+		i++;
+		c++;
+	}
+}
+
+void	*ft_memalloc(size_t size)
+{
+	void	*alloc;
+	int		i;
+
+	i = 0;
+	alloc = (void *)malloc(sizeof(char) * size);
+	if (!alloc)
+	{
+		return (NULL);
+	}
+	ft_bzero(alloc, size);
+	return (alloc);
+}
+
+
+char	*ft_strnew(size_t size)
+{
+	char *temp;
+
+	temp = (char *)ft_memalloc(size + 1);
+	return (temp);
+}
+
+
+char	*ft_ftoa(long double d)
+{
+	char	*s;
+	long	tmp;
+	int		len;
+	int		neg;
+
+	neg = (d < 0 ? -1 : 1);
+	len = (d < 0 ? 1 : 0);
+	d *= neg;
+	tmp = (long)d;
+	while (tmp > 0 && len++ >= 0)
+		tmp /= 10;
+	while (d - (long)d != 0 && len++ >= 0)
+		d *= 10;
+	s = ft_strnew(len);
+	while (--len >= 0)
+	{
+		s[len] = (long)d % 10 + '0';
+		d /= 10;
+		if (neg == -1 && len == 1)
+		{
+			s[0] = '-';
+			break ;
+		}
+	}
+	return (s);
 }
 
 int     get_float_len(long double f)
@@ -1666,8 +1754,12 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    float test = -43.566;
+    float test = 43.566;
+    long check;
     long double test2;
+
+    check = get_prec_num_f(test, 2);
+    printf("check: %ld\n", check);
 
     test2 = (long double)test;
     printf("test2: %.20Lf\n", test2);

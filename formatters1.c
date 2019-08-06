@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/02 16:52:26 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/08/05 18:45:40 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,26 @@ int		format_d(int flags[], va_list args)
 int		format_f(int flags[], va_list args)
 {
 	int count;
+	int len;
 	long double argument;
-	int arg_len;
-	char *string_float;
+	intmax_t hold;
 
-	count = 0;
-	argument = get_float_arg(flags, args);
-	arg_len = get_float_len(argument);
-	string_float = float_to_string(argument);
+	argument = va_arg(args, long double);
+	hold = (flags[6] > 0) ? get_prec_num_f(argument, flags[7]) : get_prec_num_f(argument, 6);
+	if (flags[6] == 1 && flags[7] == 0) //precision specifically 0, so just get len of the rounded value
+		len = (hold != 0) ? get_int_len((intmax_t)argument) : 1; //since we just want rounded, convert to intmax_t and add 1
+	else //follow to limit of precision
+	{
+		if (hold != 0)
+			len = get_int_len(hold) + 1;
+		else // we have a 0, and now we want len of precision after 0
+			len = (flags[6] == 0) ? 8 : flags[7] + 2; //prec not spec, so it 6 + 1 '.' + 1 '0' otherwise its prec + 2
+	}	
 	if (flags[1] == 1)
-		count = format_f_left(flags, string_float);
+		count = format_f_left(flags, hold, len);
 	else
-		count = format_f_right(flags, string_float);
-	return (0);
+		count = format_f_right(flags, hold, len);
+	return (count);
 }
 
 int		format_i(int flags[], va_list args)

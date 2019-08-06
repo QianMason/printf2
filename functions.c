@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   functions.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
+/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/05 11:22:30 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/08/05 17:46:18 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,28 @@ int     print_uint_max(uintmax_t n, int flag)
     if (flag == 1)
         write(1, &c, 1);
     count++;
+    return (count);
+}
+
+int     print_float(intmax_t hold, int prec, int dot)
+{
+    int count;
+    intmax_t temp;
+    char c;
+    
+    count = 0;
+    if (!hold)
+        return (0);
+    temp = hold % 10;
+    c = temp + 48;
+    count = print_float(hold, prec, dot + 1);
+    write(1, &c, 1);
+    count++;
+    if (dot == prec)
+    {
+        write(1, ".", 1);
+        count++;
+    }
     return (count);
 }
 
@@ -171,7 +193,17 @@ int     get_float_len(long double f)
     return (len);
 }
 
-char *float_to_string(long double argument)
+long	get_prec_num_f(long double d, int prec)
 {
+	int		neg;
+	int		i;
 
+	i = -1;
+	neg = (d < 0 ? -1 : 1);
+	d *= neg;
+	while (++i < prec)
+		d *= 10;
+	d += 0.5;
+	d *= neg;
+	return ((long)d);
 }
