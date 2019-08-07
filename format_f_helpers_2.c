@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/06 14:49:48 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/06 17:18:34 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/06 18:20:02 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,11 @@ int     format_f_right(int flags[], intmax_t hold, int len)
         count += (flags[6] == 0) ? print_float(hold, 6, 0) : print_float(hold, flags[7], 0);
     }
     return (count);
+}
+
+int     format_f_special(int flags[], intmax_t hold, int len)
+{
+    int count;
+
+    count = 0;
 }
