@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:49:47 by mqian             #+#    #+#             */
-/*   Updated: 2019/07/30 14:41:15 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/06 16:11:50 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	parse_set_flags(t_print_struct *print, char *format)
         print->flags[6] = 1;
     else if (atoi(format) > 0 && print->flags[6] == 1 && print->flags[7] == 0)
         print->flags[7] = atoi(format);
-    else if (*format == 'h' || *format == 'l')
+    else if (*format == 'h' || *format == 'l' || *format == 'L')
         parse_set_len_mod(print, format);
     else if (is_conversion(format))
         print->flags[9] = (int)(*format);
@@ -149,6 +149,8 @@ void    parse_set_len_mod(t_print_struct *print, char *format)
 				print->flags[8] = 3;
 		}
 	}
+	else if (*format == 'L')
+		print->flags[8] = 5;
 }
 
 int		is_conversion(char *format)

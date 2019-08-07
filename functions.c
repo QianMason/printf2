@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/05 17:46:18 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/06 15:43:35 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int     print_float(intmax_t hold, int prec, int dot)
         return (0);
     temp = hold % 10;
     c = temp + 48;
-    count = print_float(hold, prec, dot + 1);
+    count = print_float(hold / 10, prec, dot + 1);
     write(1, &c, 1);
     count++;
     if (dot == prec)
@@ -206,4 +206,19 @@ long	get_prec_num_f(long double d, int prec)
 	d += 0.5;
 	d *= neg;
 	return ((long)d);
+}
+
+int     get_float_len(int flags[], long double arg)
+{
+    int len;
+
+    len = 0;
+    
+}
+
+long double     get_float_arg(int flags[], va_list args)
+{
+    if (flags[8] == 5) //'L' flag shown
+        return (va_arg(args, long double));
+    return (va_arg(args, double));
 }

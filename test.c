@@ -30,6 +30,46 @@ long	get_prec_num_f(long double d, int prec)
 	return ((long)d);
 }
 
+int     print_float(intmax_t hold, int prec, int dot)
+{
+    int count;
+    intmax_t temp;
+    char c;
+    
+    count = 0;
+    if (!hold)
+        return (0);
+    temp = hold % 10;
+    c = temp + 48;
+    count = print_float(hold / 10, prec, dot + 1);
+    write(1, &c, 1);
+    count++;
+    if (dot == prec)
+    {
+        write(1, ".", 1);
+        count++;
+    }
+    return (count);
+}
+
+int    format_d_sign(int flags[], intmax_t *arg)
+{
+    int count;
+
+    count = 0;
+
+    if (*arg < 0) //negative the value is always written
+    {
+        count += write_and_increment('-');
+        *arg *= -1;
+    }
+    else if (flags[0] == 1 && *arg > 0) //next in line is if there is a + flag, which means show the '+' if positive
+        count += write_and_increment('+');
+    else if (flags[4] == 1) //final check is if ' ' flag is present, then write in a space initially
+        count += write_and_increment(' ');
+    return (count);
+}
+
 void    ft_putchar(char c)
 {
     write(1, &c, 1);
@@ -478,25 +518,6 @@ int		format_c(int flags[], va_list args)
 	return (count);
 }
 
-int    format_d_sign(int flags[], intmax_t *arg)
-{
-    printf("fdsign\n");
-    int count;
-
-    count = 0;
-
-    if (*arg < 0) //negative the value is always written
-    {
-        count += write_and_increment('-');
-        *arg *= -1;
-    }
-    else if (flags[0] == 1 && *arg > 0) //next in line is if there is a + flag, which means show the '+' if positive
-        count += write_and_increment('+');
-    else if (flags[4] == 1) //final check is if ' ' flag is present, then write in a space initially
-        count += write_and_increment(' ');
-    return (count);
-}
-
 int    format_d_left_helper_1(int flags[], intmax_t argument, int len)
 {
     int count;
@@ -673,16 +694,143 @@ int		format_d(int flags[], va_list args)
 	return (count);
 }
 
+int     format_f_zero_left(int flags[], int count)
+{
+    if (flags[6] == 0) //precision not specified, so automatically given to be 6
+    {
+        write(1, "0.000000", 8);
+        count += 8;
+        while (count < flags[5])
+            count += write_and_increment(' ');
+    }
+    else if (flags[6] == 1 && flags[7] == 0)
+    {
+        count += write_and_increment('0');
+        while (count < flags[5])
+            count += write_and_increment(' ');
+    }
+    else if (flags[6] == 1)
+    {
+        write(1, "0.", 2);
+        count += 2;
+        while (flags[7]--)
+            count += write_and_increment('0');
+        while (count < flags[5])
+            count += write_and_increment(' ');
+    }
+    return (count);
+}
+
+int     format_f_right_helper(int flags[], intmax_t hold, int len)
+{
+    int count;
+
+    count = 0;
+    if (flags[3] == 1 && flags[6] == 0)
+    {
+        count += format_d_sign(flags, &hold);
+        while (count < flags[5] - len)
+            count += write_and_increment('0');
+        count += print_float(hold, 6, 0);
+    }
+    else if (flags[6] == 1 && flags[7] == 0)
+    {
+        while (count < flags[5] - len - 1)
+            count += write_and_increment(' ');
+        count += format_d_sign(flags, &hold);
+        count += print_uint_max(hold, 1);
+    }
+    else
+    {
+        while (count < flags[5] - len - 1);
+            count += write_and_increment(' ');
+        count += format_d_sign(flags, &hold);
+        count += (flags[6] == 0) ? print_float(hold, 6, 0) : print_float(hold, flags[7], 0);
+    }
+    return (count);
+}
+
+int     format_f_zero_right(int flags[], int count)
+{
+    if (flags[6] == 0) // precision not specified so automatically given to be 6
+    {
+        while (count < flags[5] - 8)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' '); 
+        write_(1, "0.000000", 8);
+        count += 8;
+    }
+    else if (flags[6] == 1 && flags[7] == 0)
+    {
+        while (count < flags[5] - 1)
+            count += write_and_increment(' ');
+        count += write_and_increment('0');
+    }
+    else if (flags[6] == 1)
+    {
+        while (count < flags[5] - (2 + flags[7]))
+            count += write_and_increment(' ');
+        write(1, "0.", 1);
+        count += 2;
+        while (flags[7]--)
+            count += write_and_increment('0');
+    }
+    return (count);
+}
+
+int     format_f_zero(int flags[])
+{
+    int count;
+
+    count = 0;
+    if (flags[1] == 1) //left justify
+        count += format_f_zero_left(flags, count);
+    else
+        count += format_f_zero_right(flags, count);
+    return (count);   
+}
+
+int     format_f_left(int flags[], intmax_t hold)
+{
+    int count;
+
+    count = 0;
+    count = format_d_sign(flags, &hold);
+    count += print_float(hold, flags[7], 0);
+    while (count < flags[5])
+        count += write_and_increment(' ');
+    return (count);
+}
+
 int		format_f(int flags[], va_list args)
 {
-	printf("format string f");
-	return (0);
+	int count;
+	int len;
+	long double argument;
+	intmax_t hold;
+
+	argument = va_arg(args, long double);
+	if (hold == 0)
+		return (format_f_zero(flags);
+	if (flags[6] > 0)
+	{
+		hold = (flags[7] == 0) ? (intmax_t)argument : get_prec_num_f(argument, flags[7]);
+		len = (flags[7] == 0) ? get_int_len((intmax_t)argument) : get_int_len(hold) + 1;
+	}
+	else
+	{
+		hold = get_prec_num_f(argument, 6);
+		len = get_int_len((intmax_t)argument) + 7; //'.' + 6 digit precision
+	}
+	if (flags[1] == 1)
+		count = format_f_left(flags, hold);
+	else
+		count = format_f_right(flags, hold, len);
+	return (count);
 }
 
 int		format_i(int flags[], va_list args)
 {
-	printf("format string i");
-	return (0);
+	return(format_d(flags, args));
 }
 
 int     format_o_left_helper_1(int flags[], uintmax_t argument, int len)
