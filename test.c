@@ -274,6 +274,22 @@ int     print_uint_max(uintmax_t n, int flag)
     return (count);
 }
 
+int     print_int_max(intmax_t n, int flag)
+{
+    intmax_t temp;
+    char c;
+    int count;
+    if (!n)
+        return (0);
+    temp = n % 10;
+    c = temp + 48;
+    count = print_int_max(n / 10, flag);
+    if (flag == 1)
+        write(1, &c, 1);
+    count++;
+    return (count);
+}
+
 void	ft_putnbr(int n)
 {
 	unsigned int num;

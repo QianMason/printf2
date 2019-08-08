@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 12:25:03 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/06 15:43:35 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/07 17:46:54 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,4 +221,53 @@ long double     get_float_arg(int flags[], va_list args)
     if (flags[8] == 5) //'L' flag shown
         return (va_arg(args, long double));
     return (va_arg(args, double));
+}
+
+char	*ft_strnew(size_t size)
+{
+	char *temp;
+
+	temp = (char *)ft_memalloc(size + 1);
+	return (temp);
+}
+
+int     build_float(intmax_t hold, int prec, int dot, char *f_string)
+{
+    int count;
+    intmax_t temp;
+    char c;
+    
+    count = 0;
+    if (!hold)
+        return (0);
+    temp = hold % 10;
+    c = temp + 48;
+    count = print_float(hold / 10, prec, dot + 1);
+    write(1, &c, 1);
+    count++;
+    if (dot == prec)
+    {
+        write(1, ".", 1);
+        count++;
+    }
+    return (count);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t			i;
+	unsigned char	*c;
+
+	i = 0;
+	c = s;
+	if (n == 0)
+	{
+		return ;
+	}
+	while (i < n)
+	{
+		*c = '\0';
+		i++;
+		c++;
+	}
 }

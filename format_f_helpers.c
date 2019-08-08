@@ -6,135 +6,64 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/02 15:19:48 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/06 15:12:27 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/07 16:46:25 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int     format_f_left(int flags[], intmax_t hold)
+#include "ft_printf.h"
+
+int     format_f_string(long double argument, char **f_string)
 {
-    int count;
+    int len;
 
-    count = 0;
-    count = format_d_sign(flags, &hold);
-    count += print_float(hold, flags[7], 0);
-    while (count < flags[5])
-        count += write_and_increment(' ');
-    return (count);
-}
-
-int     format_f_zero(int flags[])
-{
-    int count;
-
-    count = 0;
-    if (flags[1] == 1) //left justify
-        count += format_f_zero_left(flags, count);
+    if (f_prec_default(flags) == 1)
+        *f_string = build_f_string(argument, 6);
     else
-        count += format_f_zero_right(flags, count);
-    return (count);   
+        *f_string = build_f_string(argument, flags[7]);
+    len = ft_strlen(*f_string);
+    return (len);
 }
 
-int     format_f_zero_left(int flags[], int count)
+char    *build_f_string(long double argument, int prec)
 {
-    if (flags[6] == 0) //precision not specified, so automatically given to be 6
-    {
-        write(1, "0.000000", 8);
-        count += 8;
-        while (count < flags[5])
-            count += write_and_increment(' ');
-    }
-    else if (flags[6] == 1 && flags[7] == 0)
-    {
-        count += write_and_increment('0');
-        while (count < flags[5])
-            count += write_and_increment(' ');
-    }
-    else if (flags[6] == 1)
-    {
-        write(1, "0.", 2);
-        count += 2;
-        while (flags[7]--)
-            count += write_and_increment('0');
-        while (count < flags[5])
-            count += write_and_increment(' ');
-    }
-    return (count);
+    char *f_string;
+    intmax_t hold;
+    int len;
+
+    hold = (intmax_t)argument;
+    len = get_int_len(hold) + prec + 1;
+    f_string = ft_strnew(len); //len of front part, prec, .
+    ft_bzero((void *)temp, len + 1);
+    build_float(hold, prec, len, f_string);
+    return (f_string);
 }
 
-int     format_f_zero_right(int flags[], int count)
+int     f_prec_default(int flags[])
 {
-    if (flags[6] == 0) // precision not specified so automatically given to be 6
-    {
-        while (count < flags[5] - 8)
-            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' '); 
-        write(1, "0.000000", 8);
-        count += 8;
-    }
-    else if (flags[6] == 1 && flags[7] == 0)
-    {
-        while (count < flags[5] - 1)
-            count += write_and_increment(' ');
-        count += write_and_increment('0');
-    }
-    else if (flags[6] == 1)
-    {
-        while (count < flags[5] - (2 + flags[7]))
-            count += write_and_increment(' ');
-        write(1, "0.", 1);
-        count += 2;
-        while (flags[7]--)
-            count += write_and_increment('0');
-    }
-    return (count);
+    if (flags[6] == 0 || (flags[6] == 1 && flags[7] == 0))
+        return (1);
+    return (0);
 }
 
+void    build_float(intmax_t hold, int prec, int len, char *f_string)
+{
+    char c;
+    intmax_t temp;
+    int index;
 
-// int     format_f_left_helper_1(int flags[], intmax_t hold)
-// {
-//     int count;
-
-//     count = 0;
-//     if (hold == 0)
-//         return (format_f_zero(flags, hold));
-//     count = format_d_sign(flags, hold);
-//     count += print_float(hold, flags[7], 0);
-    
-//     return (count);
-// }
-
-// int     format_f_left_helper_2(int flags[], intmax_t hold, int len)
-// {
-
-// }
-
-// int     format_f_zero(int flags[], intmax_t hold)
-// {
-//     int count;
-
-//     count = 0;
-//     count += write_and_increment('0');
-//     if (flags[6] == 1 && flags[7] == 0)
-//     {
-//         while (count < flags[5])
-//             count += write_and_increment(' ');
-//     }
-//     else if (flags[6] == 1)//now consider if theres regular precision and no precision at all
-//     {
-//         count += write_and_increment('.');
-//         while (flags[7]-- > 0)
-//             count += write_and_increment('0');
-//         while (count < flags[5])
-//             count += write_and_increment(' ');
-//     }
-//     else //precision automatically 6
-//     {
-//         write(1, ".000000", 7);
-//         count += 7;
-//         while (count < flags[5])
-//             count += write_and_increment(' ');
-//     }
-//     return (count);
-// }
-
-
-
+    index = len;
+    if (hold < 0)
+        hold *= -1;
+    while (--index >= 0)
+    {
+        if (index == len - prec - 1)
+        {
+            f_string[index] = '.';
+            continue;
+        }
+        temp = hold % 10;
+        c = temp + 48;
+        f_string[index] = c;
+        hold /= 10;
+    }
+}

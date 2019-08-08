@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/06 15:12:03 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/07 16:56:30 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,25 +46,20 @@ int		format_f(int flags[], va_list args)
 	int count;
 	int len;
 	long double argument;
-	intmax_t hold;
+	char *temp;
 
-	argument = va_arg(args, long double);
-	if (hold == 0)
+	argument = get_float_arg(flags, args);
+	count = 0;
+	if (argument == 0 || f_test_zero(flags, argument) == 0)
 		return (format_f_zero(flags));
-	if (flags[6] > 0)
-	{
-		hold = (flags[7] == 0) ? (intmax_t)argument : get_prec_num_f(argument, flags[7]);
-		len = (flags[7] == 0) ? get_int_len((intmax_t)argument) : get_int_len(hold) + 1;
-	}
-	else
-	{
-		hold = get_prec_num_f(argument, 6);
-		len = get_int_len((intmax_t)argument) + 7; //'.' + 6 digit precision
-	}
+	if (argument < 1 && argument > 1)
+		return (format_f_special(flags, argument, &temp));
+	len = format_f_string(argument, &temp);
 	if (flags[1] == 1)
-		count = format_f_left(flags, hold);
+		count += format_f_left(flags, temp, argument);
 	else
-		count = format_f_right(flags, hold, len);
+		count += format_f_right(flags, temp, len, argument);
+	free(temp);
 	return (count);
 }
 
@@ -117,4 +112,31 @@ int		format_o(int flags[], va_list args)
 // {
 // 	printf("%s", format);
 // 	return ;
+// }
+
+// int		format_f(int flags[], va_list args)
+// {
+// 	int count;
+// 	int len;
+// 	long double argument;
+// 	intmax_t hold;
+
+// 	argument = va_arg(args, long double);
+// 	if (hold == 0)
+// 		return (format_f_zero(flags));
+// 	if (flags[6] > 0)
+// 	{
+// 		hold = (flags[7] == 0) ? (intmax_t)argument : get_prec_num_f(argument, flags[7]);
+// 		len = (flags[7] == 0) ? get_int_len((intmax_t)argument) : get_int_len(hold) + 1;
+// 	}
+// 	else
+// 	{
+// 		hold = get_prec_num_f(argument, 6);
+// 		len = get_int_len((intmax_t)argument) + 7; //'.' + 6 digit precision
+// 	}
+// 	if (flags[1] == 1)
+// 		count = format_f_left(flags, hold);
+// 	else
+// 		count = format_f_right(flags, hold, len);
+// 	return (count);
 // }
