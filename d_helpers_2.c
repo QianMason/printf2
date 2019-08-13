@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 14:55:31 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/01 15:48:03 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/12 16:12:33 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int     format_d_right(int flags[], intmax_t argument, int len)
     if (len >= flags[5] && len >= flags[7])
     {
         count = format_d_sign(flags, &argument); //writes the sign if its there
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }    
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_d_right_helper_1(flags, argument, len); //maybe just switch to left one to save a function
@@ -56,7 +56,7 @@ int     format_d_right_helper_2(int flags[], intmax_t argument, int len)
         count += format_d_sign(flags, &argument);
         while (count < flags[5] - len)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     else
     {
@@ -66,7 +66,7 @@ int     format_d_right_helper_2(int flags[], intmax_t argument, int len)
             count += 1;
         else
             count += write_and_increment(' ');
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     return (count);
 }
@@ -86,6 +86,6 @@ int     format_d_right_helper_3(int flags[], intmax_t argument, int len)
         count += write_and_increment(' ');
     while (count < flags[5] - len)
         count += write_and_increment('0');
-    count += print_uint_max(argument, 1);
+    count += print_uint_max(argument, 1, 0);
     return (count);
 }

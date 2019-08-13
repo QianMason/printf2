@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/01 13:09:09 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/01 16:03:57 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/12 16:11:56 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int     format_d_left(int flags[], intmax_t argument, int len)
     if (len >= flags[5] && len >= flags[7])
     {
         count = format_d_sign(flags, &argument); //writes the sign if its there
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_d_left_helper_1(flags, argument, len);
@@ -44,13 +44,13 @@ int    format_d_left_helper_1(int flags[], intmax_t argument, int len)
     {
         while (count < flags[7] - len + 1)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     else
     {
         while (count < flags[7] - len)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     return (count);
 }
@@ -62,7 +62,7 @@ int     format_d_left_helper_2(int flags[], intmax_t argument, int len)
     int count;
 
     count = format_d_sign(flags, &argument);
-    count += print_uint_max(argument, 1);
+    count += print_uint_max(argument, 1, 0);
     while (count < flags[5])
         count += write_and_increment(' ');
     return (count);
@@ -79,13 +79,13 @@ int     format_d_left_helper_3(int flags[], intmax_t argument, int len)
     {
         while (count < flags[7] - len + 1)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     else
     {
         while (count < flags[7] - len)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1);
+        count += print_uint_max(argument, 1, 0);
     }
     while (count < flags[5])
         count += write_and_increment(' ');
@@ -102,7 +102,7 @@ int    format_d_sign(int flags[], intmax_t *arg)
         count += write_and_increment('-');
         *arg *= -1;
     }
-    else if (flags[0] == 1 && *arg > 0) //next in line is if there is a + flag, which means show the '+' if positive
+    else if (flags[0] == 1 && *arg >= 0) //next in line is if there is a + flag, which means show the '+' if positive
         count += write_and_increment('+');
     else if (flags[4] == 1) //final check is if ' ' flag is present, then write in a space initially
         count += write_and_increment(' ');
