@@ -886,6 +886,7 @@ int     format_f_zero_left(int flags[], int count)
     }
     return (count);
 }
+
 int     format_f_zero_right(int flags[], int count)
 {
     if (flags[3] && flags[0])
@@ -896,7 +897,7 @@ int     format_f_zero_right(int flags[], int count)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         if (!flags[3] && flags[0])
             count += write_and_increment('+');
-        else
+        while (count < flags[5] - 8)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         write(1, "0.000000", 8);
         count += 8;
@@ -907,11 +908,9 @@ int     format_f_zero_right(int flags[], int count)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         if (!flags[3] && flags[0])
             count += write_and_increment('+');
-        else
-            if (count == 0 || count == 1)
-                count += write_and_increment('0');
-            else
-                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        while (count < flags[5] - 1)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        count += write_and_increment('0');
     }
     else if (flags[6] == 1)
     {
@@ -2131,28 +2130,27 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    float test1 = -45.566;
-    float test2 = 0.00;
-    float test3 = 0.08344;
+    float testnorm = -45.566;
+    float testzero = 0.00;
+    float testspec = 0.08344;
     int check1 = 0;
     //printf("check1 real: %d\n", check1);
     //ft_printf("check1 mine: %d\n", check1);
-    printf("format string %%0.f\n");
-    int i = printf("%0.f| <------ real", test1);
+    printf("format string %%10f\n");
+    int i = printf("test norm: |%4f| <------ real", testnorm);
     printf("\n");
-    int j = ft_printf("%0.f| <------ mine", test1);
+    int j = ft_printf("test norm: |%4f| <------ mine", testnorm);
     printf("\n");
-    printf("test1 real = %d, test1 mine = %d\n", i, j);
-    int k = printf("%0.f| <------ real", test2);
+    printf("%d =? %d\n", i, j);
+    int k = printf("test zero: |%+010.f| <------ real", testzero);
     printf("\n");
-    int l = ft_printf("%0.f| <------ mine", test2);
+    int l = ft_printf("test zero: |%+010.f| <------ mine", testzero);
     printf("\n");
-    printf("test2 real = %d, test2 mine = %d\n", k, l);
-    int m = printf("%0.f| <------ real", test3);
+    printf("%d =? %d\n", k, l);
+    int m = printf("test spec: |%4f| <------ real", testspec);
     printf("\n");
-    int n = ft_printf("%0.f| <------ mine", test3);
+    int n = ft_printf("test spec: |%4f| <------ mine", testspec);
     printf("\n");
-    printf("test3 real = %d, test3 mine = %d\n", m, n);
-
+    printf("%d =? %d\n", m, n);
     return (0);
 }

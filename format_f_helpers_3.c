@@ -6,7 +6,7 @@
 /*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 13:34:44 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/14 17:49:18 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/08/15 13:07:22 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int     format_f_zero_left(int flags[], int count)
 }
 
 }
+
 int     format_f_zero_right(int flags[], int count)
 {
     if (flags[3] && flags[0])
@@ -77,7 +78,7 @@ int     format_f_zero_right(int flags[], int count)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         if (!flags[3] && flags[0])
             count += write_and_increment('+');
-        else
+        while (count < flags[5] - 8)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         write(1, "0.000000", 8);
         count += 8;
@@ -88,12 +89,9 @@ int     format_f_zero_right(int flags[], int count)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         if (!flags[3] && flags[0])
             count += write_and_increment('+');
-        else
-            if (count == 0 || count == 1)
-                count += write_and_increment('0');
-            else
-                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
-
+        while (count < flags[5] - 1)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        count += write_and_increment('0');
     }
     else if (flags[6] == 1)
     {
