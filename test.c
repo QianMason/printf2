@@ -136,7 +136,7 @@ int     print_float(intmax_t hold, int prec, int dot)
     int count;
     intmax_t temp;
     char c;
-    
+
     count = 0;
     if (!hold)
         return (0);
@@ -787,32 +787,42 @@ int     f_special_right(int flags[], intmax_t hold, int count)
     int temp;
 
     temp = 0;
-    if (flags[3] == 1)
+    if (flags[3] && flags[0])
+        count += write_and_increment('+');
+    if (flags[6] == 0)
     {
-        count += format_d_sign(flags, &hold);
-        while (count < flags[5] - 8)
+        while (count < flags[5] - 9)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (!flags[3] && flags[0])
+            count += write_and_increment('+');
+        else
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        write(1, "0.", 2);
+        count += 2;
+        while (temp++ < 6 - get_int_len(hold))
             count += write_and_increment('0');
+        count += print_int_max(hold, 1);
     }
-    else
+    else if (flags[6] == 1) //no need for flags[6] == 1 flags[7] == 0 bc if prec is 0, then none of the numbers at the end are shown
     {
-        if (flags[6] == 0)
-        {
-            while (count < flags[5] - 9)
-                count += write_and_increment(' ');
-        }
+        while (count < flags[5] - (3 + flags[7]))
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (!flags[3] && flags[0])
+            count += write_and_increment('+');
         else
-        {
-            while (count < flags[5] - (3 + flags[7]))
-                count += write_and_increment(' ');
-        }
-        if (format_d_sign(flags, &hold) == 1)
-            count += 1;
-        else
-            count += write_and_increment(' ');
+            if (count == 0 || count == 1)
+            {
+                while (count < flags[5] - flags[7] - 2)
+                    count += (flags[3]) ? write_and_increment('0') : write_and_increment(' ');
+            }
+            else
+                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        write(1, "0.", 2);
+        count += 2;
+        while (temp++ < flags[7] - get_int_len(hold))
+            count += write_and_increment('0');
+        count += print_int_max(hold, 1);
     }
-    write(1, "0.", 2);
-    count += 2;
-    count += print_int_max(hold, 1);
     return (count);
 }
 
@@ -876,17 +886,15 @@ int     format_f_zero_left(int flags[], int count)
     }
     return (count);
 }
-
 int     format_f_zero_right(int flags[], int count)
 {
-    int sign;
-
-    sign = (flags[0] == 1) ? 1 : 0;
+    if (flags[3] && flags[0])
+        count += write_and_increment('+');
     if (flags[6] == 0) // precision not specified so automatically given to be 6
     {
         while (count < flags[5] - 9)
-            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' '); 
-        if (sign)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (!flags[3] && flags[0])
             count += write_and_increment('+');
         else
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
@@ -897,20 +905,29 @@ int     format_f_zero_right(int flags[], int count)
     {
         while (count < flags[5] - 2)
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
-        if (sign)
+        if (!flags[3] && flags[0])
             count += write_and_increment('+');
         else
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
-        count += write_and_increment('0');
+        if (count == 0 || count == 1 && !flags[3])
+            count += write_and_increment('0');
+        else
+            count += (count + 1 <= flags[5]) ? write_and_increment('0') : 0;
     }
     else if (flags[6] == 1)
     {
         while (count < flags[5] - (3 + flags[7]))
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
-        if (sign)
+        if (!flags[3] && flags[0])
             count += write_and_increment('+');
         else
-            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');        
+            if (count == 0 || count == 1)
+            {
+                while (count < flags[5] - flags[7] - 2)
+                    count += (flags[3]) ? write_and_increment('0') : write_and_increment(' ');
+            }
+            else
+                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         write(1, "0.", 2);
         count += 2;
         while (flags[7]--)
@@ -941,7 +958,7 @@ int     format_f_zero(int flags[])
         count += format_f_zero_left(flags, count);
     else
         count += format_f_zero_right(flags, count);
-    return (count);   
+    return (count);
 }
 
 int     format_f_left(int flags[], char *f_string, long double arg)
@@ -1029,7 +1046,7 @@ int		format_f(int flags[], va_list args)
 	count = 0;
 	if (argument == 0 || f_test_zero(flags, argument) == 0) //0 case or truncated string would round to zero
 		return (format_f_zero(flags));
-	if (argument < 1 && argument > 1) //self explanatory
+	if (argument < 1 && argument > 0) //self explanatory
 		return (format_f_special(flags, argument, count));
 	len = format_f_string(flags, argument, &temp); //sets up temp string, returns length of created string
     if (flags[1] == 1)
@@ -2120,12 +2137,12 @@ int     main(void)
     float test2 = 0.00;
     float test3 = 0.00344;
     int check1 = 0;
-    printf("check1 real: %d\n", check1);
-    ft_printf("check1 mine: %d\n", check1);
-
-    int i = printf("%+015.f| <------ real", test2);
+    //printf("check1 real: %d\n", check1);
+    //ft_printf("check1 mine: %d\n", check1);
+    printf("format string %%.f\n");
+    int i = printf("%.f| <------ real", test2);
     printf("\n");
-    int j = ft_printf("%+015.f| <------ mine", test2);
+    int j = ft_printf("%.f| <------ mine", test2);
     printf("\n");
     printf("real = %d, mine = %d\n", i, j);
     return (0);

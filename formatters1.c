@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   formatters1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/12 16:17:31 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/14 16:46:10 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int		format_f(int flags[], va_list args)
 	count = 0;
 	if (argument == 0 || f_test_zero(flags, argument) == 0) //0 case or truncated string would round to zero
 		return (format_f_zero(flags));
-	if (argument < 1 && argument > 1) //self explanatory
+	if (argument < 1 && argument > 0) //self explanatory
 		return (format_f_special(flags, argument, count));
 	len = format_f_string(flags, argument, &temp); //sets up temp string, returns length of created string
 	if (flags[1] == 1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   format_f_helpers_3.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 13:34:44 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/12 18:11:01 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/14 17:46:58 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int     format_f_zero(int flags[])
         count += format_f_zero_left(flags, count);
     else
         count += format_f_zero_right(flags, count);
-    return (count);   
+    return (count);
 }
 
 int     format_f_zero_left(int flags[], int count)
@@ -66,27 +66,46 @@ int     format_f_zero_left(int flags[], int count)
     return (count);
 }
 
+}
 int     format_f_zero_right(int flags[], int count)
 {
     if (flags[3] && flags[0])
         count += write_and_increment('+');
     if (flags[6] == 0) // precision not specified so automatically given to be 6
     {
-        while (count < flags[5] - 8)
-            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' '); 
+        while (count < flags[5] - 9)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (!flags[3] && flags[0])
+            count += write_and_increment('+');
+        else
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         write(1, "0.000000", 8);
         count += 8;
     }
     else if (flags[6] == 1 && flags[7] == 0)
     {
-        while (count < flags[5] - 1)
-            count += write_and_increment(' ');
-        count += write_and_increment('0');
+        while (count < flags[5] - 2)
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (!flags[3] && flags[0])
+            count += write_and_increment('+');
+        else
+            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (count == )
     }
     else if (flags[6] == 1)
     {
-        while (count < flags[5] - (2 + flags[7]))
+        while (count < flags[5] - (3 + flags[7]))
             count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+        if (!flags[3] && flags[0])
+            count += write_and_increment('+');
+        else
+            if (count == 0 || count == 1)
+            {
+                while (count < flags[5] - flags[7] - 2)
+                    count += (flags[3]) ? write_and_increment('0') : write_and_increment(' ');
+            }
+            else
+                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
         write(1, "0.", 2);
         count += 2;
         while (flags[7]--)
