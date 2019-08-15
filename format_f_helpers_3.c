@@ -6,7 +6,7 @@
 /*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 13:34:44 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/14 17:46:58 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/08/14 17:49:18 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,11 @@ int     format_f_zero_right(int flags[], int count)
         if (!flags[3] && flags[0])
             count += write_and_increment('+');
         else
-            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
-        if (count == )
+            if (count == 0 || count == 1)
+                count += write_and_increment('0');
+            else
+                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
+
     }
     else if (flags[6] == 1)
     {

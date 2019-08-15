@@ -908,11 +908,10 @@ int     format_f_zero_right(int flags[], int count)
         if (!flags[3] && flags[0])
             count += write_and_increment('+');
         else
-            count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
-        if (count == 0 || count == 1 && !flags[3])
-            count += write_and_increment('0');
-        else
-            count += (count + 1 <= flags[5]) ? write_and_increment('0') : 0;
+            if (count == 0 || count == 1)
+                count += write_and_increment('0');
+            else
+                count += (flags[3] == 1) ? write_and_increment('0') : write_and_increment(' ');
     }
     else if (flags[6] == 1)
     {
@@ -979,7 +978,6 @@ int     format_f_right(int flags[], char *f_string, int len, long double arg)
 {
     int count;
     intmax_t hold;
-    printf("in here\n");
     hold = (intmax_t)arg;
     count = 0;
     if (flags[3] == 1) //0 pad
@@ -2135,15 +2133,26 @@ int     main(void)
 {
     float test1 = -45.566;
     float test2 = 0.00;
-    float test3 = 0.00344;
+    float test3 = 0.08344;
     int check1 = 0;
     //printf("check1 real: %d\n", check1);
     //ft_printf("check1 mine: %d\n", check1);
-    printf("format string %%.f\n");
-    int i = printf("%.f| <------ real", test2);
+    printf("format string %%0.f\n");
+    int i = printf("%0.f| <------ real", test1);
     printf("\n");
-    int j = ft_printf("%.f| <------ mine", test2);
+    int j = ft_printf("%0.f| <------ mine", test1);
     printf("\n");
-    printf("real = %d, mine = %d\n", i, j);
+    printf("test1 real = %d, test1 mine = %d\n", i, j);
+    int k = printf("%0.f| <------ real", test2);
+    printf("\n");
+    int l = ft_printf("%0.f| <------ mine", test2);
+    printf("\n");
+    printf("test2 real = %d, test2 mine = %d\n", k, l);
+    int m = printf("%0.f| <------ real", test3);
+    printf("\n");
+    int n = ft_printf("%0.f| <------ mine", test3);
+    printf("\n");
+    printf("test3 real = %d, test3 mine = %d\n", m, n);
+
     return (0);
 }
