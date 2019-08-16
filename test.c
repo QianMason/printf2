@@ -2164,14 +2164,14 @@ int     main(void)
     //printf("check1 real: %d\n", check1);
     //ft_printf("check1 mine: %d\n", check1);
     printf("format string %%10f\n");
-    int i = printf("test norm: |%.0f| <------ real", testnorm);
+    int i = printf("test norm: |%-f| <------ real", testnorm);
     printf("\n");
-    int j = ft_printf("test norm: |%.0f| <------ mine", testnorm);
+    int j = ft_printf("test norm: |%-f| <------ mine", testnorm);
     printf("\n");
     printf("%d =? %d\n", i, j);
-    int k = printf("test zero: |%8.3f| <------ real", testzero);
+    int k = printf("test zero: |%+ 0.f| <------ real", testzero);
     printf("\n");
-    int l = ft_printf("test zero: |%8.3f| <------ mine", testzero);
+    int l = ft_printf("test zero: |%+ 0.f| <------ mine", testzero);
     printf("\n");
     printf("%d =? %d\n", k, l);
     int m = printf("test spec: |% 7.4f| <------ real", testspec);
