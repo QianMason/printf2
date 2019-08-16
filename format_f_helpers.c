@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   format_f_helpers.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/02 15:19:48 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/12 15:14:50 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/15 17:26:37 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int     format_f_string(int flags[], long double argument, char **f_string)
         *f_string = build_f_string(argument, 0);
     else
         *f_string = build_f_string(argument, flags[7]);
-    printf("fstring: %s\n", *f_string);
     len = ft_strlen(*f_string);
     return (len);
 }

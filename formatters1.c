@@ -6,7 +6,7 @@
 /*   By: Thunderpurtz <Thunderpurtz@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:42 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/14 16:46:10 by Thunderpurt      ###   ########.fr       */
+/*   Updated: 2019/08/15 16:09:12 by Thunderpurt      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,18 @@ int		format_f(int flags[], va_list args)
 	argument = get_float_arg(flags, args);
 	count = 0;
 	if (argument == 0 || f_test_zero(flags, argument) == 0) //0 case or truncated string would round to zero
-		return (format_f_zero(flags));
-	if (argument < 1 && argument > 0) //self explanatory
+		return (format_f_zero(flags, argument));
+	if ((argument < 1 && argument > 0) || (argument < 0 && argument > -1)) //self explanatory
 		return (format_f_special(flags, argument, count));
 	len = format_f_string(flags, argument, &temp); //sets up temp string, returns length of created string
-	if (flags[1] == 1)
+    if (flags[1] == 1)
 		count += format_f_left(flags, temp, argument);
 	else
 		count += format_f_right(flags, temp, len, argument);
 	free(temp);
 	return (count);
 }
+
 
 int		format_i(int flags[], va_list args)
 {
