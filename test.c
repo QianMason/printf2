@@ -205,30 +205,6 @@ char	*ft_ftoa(long double d)
 	return (s);
 }
 
-int     get_float_len(long double f)
-{
-    int len;
-    intmax_t hold;
-    printf("f in func: %Lf\n", f);
-    hold = (intmax_t)f; //cast to int to get that portion of the number;
-
-    printf("hold: %lld\n", hold);
-    len = 0;
-    if (f < 0) //for negative value
-        len += 1;
-    f = (f < 0) ? -f : f;
-    printf("f: %Lf\n", f);
-	while (hold > 0 && len++ >= 0)
-		hold /= 10;
-	while (f - (long)f != 0 && len++ >= 0)
-	{
-		f *= 10;
-		//printf("len now: %d, f now: %Lf\n", len, f);
-	}
-	//printf("len + 1: %d\n", len + 1);
-    return (len + 1); //for decimal
-}
-
 int    convert_to_hex_upper(uintmax_t n, int flag)
 {
     uintmax_t temp;
@@ -2157,27 +2133,32 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    float testnorm = 45.566;
-    float testzero = 0.00;
-    float testspec = 0.18344;
-    int check1 = 0;
-    //printf("check1 real: %d\n", check1);
-    //ft_printf("check1 mine: %d\n", check1);
-    printf("format string %%10f\n");
-    int i = printf("test norm: |%-f| <------ real", testnorm);
+    // float testnorm = 45.566;
+    // float testzero = 0.00;
+    // float testspec = 0.18344;
+    // int check1 = 0;
+    // //printf("check1 real: %d\n", check1);
+    // //ft_printf("check1 mine: %d\n", check1);
+    // printf("format string %%10f\n");
+    // int i = printf("test norm: |%-f| <------ real", testnorm);
+    // printf("\n");
+    // int j = ft_printf("test norm: |%-f| <------ mine", testnorm);
+    // printf("\n");
+    // printf("%d =? %d\n", i, j);
+    // int k = printf("test zero: |%+ 0.f| <------ real", testzero);
+    // printf("\n");
+    // int l = ft_printf("test zero: |%+ 0.f| <------ mine", testzero);
+    // printf("\n");
+    // printf("%d =? %d\n", k, l);
+    // int m = printf("test spec: |% 7.4f| <------ real", testspec);
+    // printf("\n");
+    // int n = ft_printf("test spec: |% 7.4f| <------ mine", testspec);
+    // printf("\n");
+    // printf("%d =? %d\n", m, n);
+
+    printf("%x|", -42);
     printf("\n");
-    int j = ft_printf("test norm: |%-f| <------ mine", testnorm);
+    ft_printf("%x|", -42);
     printf("\n");
-    printf("%d =? %d\n", i, j);
-    int k = printf("test zero: |%+ 0.f| <------ real", testzero);
-    printf("\n");
-    int l = ft_printf("test zero: |%+ 0.f| <------ mine", testzero);
-    printf("\n");
-    printf("%d =? %d\n", k, l);
-    int m = printf("test spec: |% 7.4f| <------ real", testspec);
-    printf("\n");
-    int n = ft_printf("test spec: |% 7.4f| <------ mine", testspec);
-    printf("\n");
-    printf("%d =? %d\n", m, n);
     return (0);
 }
