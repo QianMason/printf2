@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/05 14:21:57 by Thunderpurt       #+#    #+#             */
-/*   Updated: 2019/08/19 17:40:46 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/20 14:33:21 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,7 @@ int		format_p(int flags[], va_list args)
 	dec = (uintmax_t)temp;
 	len = convert_to_hex(dec, 0);
 	if (!temp)
-	{
-		write(1, "0x0", 3);
-		count += 3;
-	}
+		count += format_p_zero(flags);
 	else if (flags[1] == 1) //left justify
 		count += format_p_left(flags, dec, len);
 	else //right justify

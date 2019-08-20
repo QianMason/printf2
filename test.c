@@ -103,9 +103,7 @@ void	ft_bzero(void *s, size_t n)
 void	*ft_memalloc(size_t size)
 {
 	void	*alloc;
-	int		i;
 
-	i = 0;
 	alloc = (void *)malloc(sizeof(char) * size);
 	if (!alloc)
 	{
@@ -262,7 +260,7 @@ intmax_t    get_int_arg(int flags[], va_list args)
     if (flags[8] == 1)
         argument = va_arg(args, int);
     else if (flags[8] == 2)
-        argument = va_arg(args, int);
+        argument = (short)va_arg(args, int);
     else if (flags[8] == 3)
         argument = va_arg(args, long);
     else if (flags[8] == 4)
@@ -272,11 +270,30 @@ intmax_t    get_int_arg(int flags[], va_list args)
     return (argument);
 }
 
-int     get_int_len(intmax_t n)
+uintmax_t   get_x_int_arg(int flags[], va_list args)
+{
+    intmax_t argument;
+    if (flags[8] == 1)
+        argument = va_arg(args, int);
+    else if (flags[8] == 2)
+        argument = (short)va_arg(args, int);
+    else if (flags[8] == 3)
+        argument = (unsigned long)va_arg(args, long);
+    else if (flags[8] == 4)
+        argument = (unsigned long long)va_arg(args, long long);
+    else
+        argument = (unsigned int)va_arg(args, int);
+    return (argument);
+}
+
+
+int				get_int_len(intmax_t n)
 {
     int count;
 
     count = 0;
+    if (n == 0)
+        return (1);
     while (n)
     {
         n /= 10;
@@ -444,10 +461,7 @@ int     format_p_left_helper(int flags[], uintmax_t dec, int len)
             printf("above was format_p_left_helper_2\n");
         }
         else // minw >= precision > len
-        {
             count += format_p_left_helper_3(flags, dec, len);
-            printf("left format_p_left_helper_3\n");
-        }
     }
     return (count);
 }
@@ -524,14 +538,12 @@ int     format_p_right_helper(int flags[], uintmax_t dec, int len)
     count = 0;
     if (len >= flags[5] && len >= flags[7])
 	{
-	    printf("regular call\n");
 		write(1, "0x", 2);
 		count += 2;
         count += convert_to_hex(dec, 1);
 	}
     else if (flags[7] >= flags[5] && flags[7] >= len)
 	{
-	    printf("in format_p_right_helper_1\n");
 		write(1, "0x", 2);
 		count += 2;
         count += format_p_right_helper_1(flags, dec, len);
@@ -539,10 +551,7 @@ int     format_p_right_helper(int flags[], uintmax_t dec, int len)
     else if (flags[5] >= len && flags[5] >= flags[7])
     {
         if (len >= flags[7])
-        {
-            printf("in format_p_right_helper_2\n");
             count += format_p_right_helper_2(flags, dec, len);
-        }
         else // minw >= precision > len
             count += format_p_right_helper_3(flags, dec, len);
     }
@@ -671,9 +680,8 @@ int     format_d_right_helper_1(int flags[], intmax_t argument, int len)
     return (format_d_left_helper_1(flags, argument, len));
 }
 
-int     format_d_right_helper_2(int flags[], intmax_t argument, int len)
+int		format_d_right_helper_2(int flags[], intmax_t arg, int len)
 {
-    printf("fdrh2\n");
     //minw greatest
     //len >= precision so precision is ignored
     //must consider flags[3] since it could be zero padded
@@ -682,20 +690,29 @@ int     format_d_right_helper_2(int flags[], intmax_t argument, int len)
     count = 0;
     if (flags[3] == 1 && flags[6] == 0 && flags[7] == 0)
     {
-        count += format_d_sign(flags, &argument);
+        count += format_d_sign(flags, &arg);
         while (count < flags[5] - len)
             count += write_and_increment('0');
-        count += print_uint_max(argument, 1, 0);
+        count += print_uint_max(arg, 1, 0);
     }
     else
     {
         while (count < flags[5] - len - 1)
             count += write_and_increment(' ');
-        if (format_d_sign(flags, &argument) == 1)
-            count += 1;
+        if (flags[6] && !flags[7] && !arg && flags[3])
+        {
+            while (count < flags[5] - 1)
+                count += write_and_increment(' ');
+            count += write_and_increment('+');
+        }
         else
-            count += write_and_increment(' ');
-        count += print_uint_max(argument, 1, 0);
+        {
+            if (format_d_sign(flags, &arg) == 1)
+                count += 1;
+            else
+                count += write_and_increment(' ');
+            count += print_uint_max(arg, 1, 0);
+        }    
     }
     return (count);
 }
@@ -728,7 +745,7 @@ int     format_d_right(int flags[], intmax_t argument, int len)
     if (len >= flags[5] && len >= flags[7])
     {
         count = format_d_sign(flags, &argument); //writes the sign if its there
-        count += print_uint_max(argument, 1, 0);
+        count += (flags[6] && !flags[7] && !argument) ? 0: print_uint_max(argument, 1, 0);
     }
     else if (flags[7] >= flags[5] && flags[7] >= len)
         count += format_d_right_helper_1(flags, argument, len); //maybe just switch to left one to save a function
@@ -1231,6 +1248,46 @@ int		format_o(int flags[], va_list args)
 	return (count);
 }
 
+int		format_p_zero_left(int flags[], int count)
+{
+	int temp;
+
+	temp = 0;
+	write(1, "0x", 2);
+	count += 2;
+	while (temp++ < flags[7])
+		count += write_and_increment('0');
+	while (count < flags[5])
+		count += write_and_increment(' ');
+	return (count);
+}
+
+int		format_p_zero_right(int flags[], int count)
+{
+	int temp;
+
+	temp = 0;
+	while (count < flags[5] - flags[7] - 2)
+		count += write_and_increment(' ');
+	write(1, "0x", 2);
+	count += 2;
+	while (temp++ < flags[7])
+		count += write_and_increment('0');
+	return (0);
+}
+
+int		format_p_zero(int flags[])
+{
+	int count;
+
+	count = 0;
+	if (flags[1] == 1)
+		count += format_p_zero_left(flags, count);
+	else
+		count += format_p_zero_right(flags, count);
+	return (count);
+}
+
 int		format_p(int flags[], va_list args)
 {
 	int count;
@@ -1243,10 +1300,7 @@ int		format_p(int flags[], va_list args)
 	dec = (uintmax_t)temp;
 	len = convert_to_hex(dec, 0);
 	if (!temp)
-	{
-		write(1, "0x0", 3);
-		count += 3;
-	}
+        count += format_p_zero(flags);
 	else if (flags[1] == 1) //left justify
 		count += format_p_left_helper(flags, dec, len);
 	else //right justify
@@ -1404,11 +1458,16 @@ int     format_s_right(int flags[], char *temp, int len)
 
 int		format_s(int flags[], va_list args) //first one you are working on
 {
-	int count;
-	char *temp;
-	int	len;
+	int		count;
+	char	*temp;
+	int		len;
 
 	temp = va_arg(args, char *);
+	if (!temp)
+	{
+		write(1, "(null)", 6);
+		return (6);
+	}
 	len = ft_strlen(temp);
     if (!flags[5] && !flags[7] && flags[6] == 1)
 		return (0);
@@ -1627,6 +1686,7 @@ int     format_x_left_helper_3(int flags[], uintmax_t argument, int len)
     count += (argument > 0) ? convert_to_hex(argument, 1) : write_and_increment('0');
     while (count < flags[5])
         count += write_and_increment(' ');
+    return (count);
 }
 
 int     format_x_right_helper_1(int flags[], uintmax_t argument, int len)
@@ -1735,13 +1795,13 @@ int     format_x_right(int flags[], uintmax_t argument, int len)
 
 int		format_x(int flags[], va_list args)
 {
-	int count;
-	uintmax_t argument;
-	int len;
+	int			count;
+	uintmax_t	argument;
+	int			len;
 
 	count = 0;
-	argument = (uintmax_t)get_int_arg(flags, args);
-	len = convert_to_hex(argument, 0);
+	argument = (uintmax_t)get_x_int_arg(flags, args);
+	len = (argument > 0) ? convert_to_hex(argument, 0) : 1;
 	if (flags[1] == 1)
 		count = format_x_left(flags, argument, len);
 	else
@@ -1913,7 +1973,7 @@ int		format_x_upper(int flags[], va_list args)
 	int len;
 
 	count = 0;
-	argument = (uintmax_t)get_int_arg(flags, args);
+	argument = (uintmax_t)get_x_int_arg(flags, args);
 	len = convert_to_hex_upper(argument, 0);
 	if (flags[1] == 1)
 		count = format_x_upper_left(flags, argument, len);
@@ -2133,32 +2193,30 @@ int		ft_printf(const char *format, ...)
 
 int     main(void)
 {
-    // float testnorm = 45.566;
-    // float testzero = 0.00;
-    // float testspec = 0.18344;
-    // int check1 = 0;
-    // //printf("check1 real: %d\n", check1);
-    // //ft_printf("check1 mine: %d\n", check1);
-    // printf("format string %%10f\n");
-    // int i = printf("test norm: |%-f| <------ real", testnorm);
-    // printf("\n");
-    // int j = ft_printf("test norm: |%-f| <------ mine", testnorm);
-    // printf("\n");
-    // printf("%d =? %d\n", i, j);
-    // int k = printf("test zero: |%+ 0.f| <------ real", testzero);
-    // printf("\n");
-    // int l = ft_printf("test zero: |%+ 0.f| <------ mine", testzero);
-    // printf("\n");
-    // printf("%d =? %d\n", k, l);
-    // int m = printf("test spec: |% 7.4f| <------ real", testspec);
-    // printf("\n");
-    // int n = ft_printf("test spec: |% 7.4f| <------ mine", testspec);
-    // printf("\n");
-    // printf("%d =? %d\n", m, n);
+    int m = -42;
+    int p = 42;
+    int *l = &m;
+    //printf("check1 real: %d\n", check1);
+    //ft_printf("check1 mine: %d\n", check1);
+    printf("format string %%10f\n");
+    int i = printf("test norm: |%.d, %.0d| <------ real", 0, 0);
+    printf("\n");
+    int j = ft_printf("test norm: |%.d, %.0d| <------ mine", 0, 0);
+    printf("\n");
+    printf("%#.10x| test1", 0);
+    printf("\n");
+    ft_printf("%#.10x| test2", 0);
+    printf("\n");
+    printf("%d =? %d\n", i, j);
+    ft_printf("\n%+10.d|mine\n", 0);
+    printf("%+10.d|real", 0);
+    
+    printf("\noctal tests\n");
+    ft_printf("|%o, %ho, %hho|\n", -42, -42, -42);
+    printf("|%o, %ho, %hho|\n", -42, -42, -42);
 
-    printf("%x|", -42);
-    printf("\n");
-    ft_printf("%x|", -42);
-    printf("\n");
+    printf("pointer tests\n");
+    ft_printf("|%10.p|\n", 0);
+    printf("|%10.p|\n", 0);
     return (0);
 }

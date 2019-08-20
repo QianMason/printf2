@@ -6,7 +6,7 @@
 /*   By: mqian <mqian@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:43:01 by mqian             #+#    #+#             */
-/*   Updated: 2019/08/19 17:11:36 by mqian            ###   ########.fr       */
+/*   Updated: 2019/08/20 14:34:08 by mqian            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,9 @@ int				format_p_right(int flags[], uintmax_t dec, int len);
 int				format_p_right_helper_1(int flags[], uintmax_t dec, int len);
 int				format_p_right_helper_2(int flags[], uintmax_t dec, int len);
 int				format_p_right_helper_3(int flags[], uintmax_t dec, int len);
+int				format_p_zero(int flags[]);
+int				format_p_zero_left(int flags[], int count);
+int				format_p_zero_right(int flags[], int count);
 
 int				format_s_left(int flags[], char *temp, int len);
 int				format_s_left_helper_1(int flags[], char *temp, int len);
